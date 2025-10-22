@@ -479,7 +479,7 @@ function abrirModalProducto(productoId) {
     // Configurar botón de WhatsApp
     const whatsappBtn = document.getElementById('whatsapp-btn');
     const mensaje = `Hola! Me interesa el ${producto.nombre} (${producto.codigo}) - ${producto.precio}. ¿Podrían darme más información?`;
-    whatsappBtn.href = `https://wa.me/51999999999?text=${encodeURIComponent(mensaje)}`;
+    whatsappBtn.href = `https://wa.me/51949823528?text=${encodeURIComponent(mensaje)}`;
     
     // Mostrar modal
     modal.classList.add('active');
