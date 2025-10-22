@@ -737,42 +737,132 @@ function configurarNavegacionMovil() {
     // Configurar gestos táctiles para móvil
     configurarGestosMovil();
     
+    // Configurar gestos también en las hojas individuales
+    configurarGestosEnHojas();
+    
     console.log('Navegación móvil configurada');
 }
 
 function configurarGestosMovil() {
     const mobileContainer = document.getElementById('mobile-catalog-container');
     let startX = 0;
+    let startY = 0;
     let isDragging = false;
+    let isHorizontalSwipe = false;
+    
+    console.log('Configurando gestos táctiles para móvil...');
     
     mobileContainer.addEventListener('touchstart', function(e) {
-        startX = e.touches[0].clientX;
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
         isDragging = false;
+        isHorizontalSwipe = false;
+        console.log('Touch start:', startX, startY);
     }, { passive: true });
     
     mobileContainer.addEventListener('touchmove', function(e) {
         if (!isDragging) {
-            const deltaX = e.touches[0].clientX - startX;
-            if (Math.abs(deltaX) > 10) {
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - startX;
+            const deltaY = touch.clientY - startY;
+            
+            // Detectar si es un deslizamiento horizontal
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 15) {
                 isDragging = true;
+                isHorizontalSwipe = true;
+                console.log('Deslizamiento horizontal detectado:', deltaX);
+            } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 15) {
+                isDragging = true;
+                isHorizontalSwipe = false;
+                console.log('Deslizamiento vertical detectado:', deltaY);
             }
         }
     }, { passive: true });
     
     mobileContainer.addEventListener('touchend', function(e) {
-        if (isDragging) {
-            const deltaX = e.changedTouches[0].clientX - startX;
+        if (isDragging && isHorizontalSwipe) {
+            const touch = e.changedTouches[0];
+            const deltaX = touch.clientX - startX;
+            
+            console.log('Touch end - deltaX:', deltaX);
             
             if (deltaX > 50) {
                 // Deslizar derecha - anterior
+                console.log('Deslizar derecha - ir a anterior');
                 document.getElementById('btn-anterior').click();
             } else if (deltaX < -50) {
                 // Deslizar izquierda - siguiente
+                console.log('Deslizar izquierda - ir a siguiente');
                 document.getElementById('btn-siguiente').click();
             }
         }
+        
         isDragging = false;
+        isHorizontalSwipe = false;
     }, { passive: true });
+    
+    console.log('Gestos táctiles configurados correctamente');
+}
+
+function configurarGestosEnHojas() {
+    console.log('Configurando gestos en hojas individuales...');
+    
+    // Agregar gestos a todas las hojas móviles
+    const hojas = document.querySelectorAll('.hoja-movil');
+    hojas.forEach((hoja, index) => {
+        let startX = 0;
+        let startY = 0;
+        let isDragging = false;
+        let isHorizontalSwipe = false;
+        
+        hoja.addEventListener('touchstart', function(e) {
+            const touch = e.touches[0];
+            startX = touch.clientX;
+            startY = touch.clientY;
+            isDragging = false;
+            isHorizontalSwipe = false;
+        }, { passive: true });
+        
+        hoja.addEventListener('touchmove', function(e) {
+            if (!isDragging) {
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - startX;
+                const deltaY = touch.clientY - startY;
+                
+                // Detectar si es un deslizamiento horizontal
+                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 15) {
+                    isDragging = true;
+                    isHorizontalSwipe = true;
+                } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 15) {
+                    isDragging = true;
+                    isHorizontalSwipe = false;
+                }
+            }
+        }, { passive: true });
+        
+        hoja.addEventListener('touchend', function(e) {
+            if (isDragging && isHorizontalSwipe) {
+                const touch = e.changedTouches[0];
+                const deltaX = touch.clientX - startX;
+                
+                if (deltaX > 50) {
+                    // Deslizar derecha - anterior
+                    console.log('Deslizar derecha en hoja - ir a anterior');
+                    document.getElementById('btn-anterior').click();
+                } else if (deltaX < -50) {
+                    // Deslizar izquierda - siguiente
+                    console.log('Deslizar izquierda en hoja - ir a siguiente');
+                    document.getElementById('btn-siguiente').click();
+                }
+            }
+            
+            isDragging = false;
+            isHorizontalSwipe = false;
+        }, { passive: true });
+    });
+    
+    console.log(`Gestos configurados en ${hojas.length} hojas móviles`);
 }
 
 function paginaAnterior() {
