@@ -96,9 +96,9 @@ function inicializarFlipbook(){
         height: isMobile ? 640 : 640,
         autoCenter: true,
         display: isMobile ? 'single' : 'double',
-        gradients: true,
+        gradients: !isMobile,  // Desactivar gradientes en móvil
         acceleration: true,
-        elevation: 50,
+        elevation: isMobile ? 0 : 50,  // Sin elevación en móvil
         duration: 800,
         pages: $('#flipbook .page').length,
         when: {
@@ -123,6 +123,16 @@ function inicializarFlipbook(){
     // indicador total
     $('#total-pages').text($flip.turn('pages') || $('#flipbook .page').length);
     $('#current-page').text(1);
+    
+    // Remover sombras en móvil después de la inicialización
+    if (isMobile) {
+        setTimeout(() => {
+            $('#flipbook').find('.turn-page-wrapper, .turn-page').css('box-shadow', 'none');
+            $('#flipbook').css('box-shadow', 'none');
+            // Remover cualquier elemento de sombra que Turn.js haya creado
+            $('#flipbook').find('[class*="shadow"], [id*="shadow"]').remove();
+        }, 100);
+    }
 
     // animar portada chispas
     generarSparkles();
