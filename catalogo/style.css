@@ -278,6 +278,43 @@
         .modal-grid{ grid-template-columns:1fr; }
         .modal-imagen{ height:260px }
         .mobile-instructions{ display:block }
+        
+        /* OCULTAR la sombra central del libro en móvil */
+        #flipbook::before {
+            display: none !important;
+        }
+        
+        /* Asegurar que no haya sombras en el contenedor móvil */
+        .flipbook-container {
+            box-shadow: none !important;
+        }
+        
+        /* Remover cualquier sombra de las páginas individuales en móvil */
+        .stf__parent,
+        .stf__wrapper,
+        .stf__block,
+        .stf__item {
+            box-shadow: none !important;
+        }
+        
+        /* Remover sombras de páginas específicas */
+        .page {
+            box-shadow: none !important;
+        }
+        
+        /* Remover cualquier pseudo-elemento que genere sombras */
+        #flipbook *::before,
+        #flipbook *::after {
+            background: none !important;
+            box-shadow: none !important;
+        }
+        
+        /* Asegurar que el contenedor sea completamente plano */
+        #flipbook,
+        #flipbook > * {
+            transform: none !important;
+            transform-style: flat !important;
+        }
     }
     @media (max-width:420px){
         #flipbook{ height:560px; max-width:360px }
