@@ -279,7 +279,6 @@ function generarHojaProducto(producto, numeroHoja, container) {
         <div class="hoja-contenido">
             <div class="hoja-header">
                 <h2 class="hoja-titulo">${producto.nombre}</h2>
-                <div class="hoja-codigo">${producto.codigo}</div>
             </div>
             
             <div class="hoja-imagen">
@@ -298,7 +297,7 @@ function generarHojaProducto(producto, numeroHoja, container) {
             </div>
             
             <div class="hoja-acciones">
-                <button class="hoja-btn-whatsapp" onclick="abrirModalProducto('${producto.id}')">
+                <button class="hoja-btn-whatsapp" onclick="abrirWhatsAppDirecto('${producto.id}')">
                     <span class="whatsapp-icon">📱</span>
                     Consultar por WhatsApp
                 </button>
@@ -437,7 +436,6 @@ function generarTarjetaProducto(producto) {
                 <h3 class="producto-titulo">${producto.nombre}</h3>
                 <p class="producto-descripcion">${producto.desc.substring(0, 120)}...</p>
                 <div class="producto-footer">
-                    <span class="producto-codigo">${producto.codigo}</span>
                     <span class="producto-precio">${producto.precio}</span>
                 </div>
             </div>
@@ -861,9 +859,36 @@ function aplicarEfectoColocarHoja() {
 }
 
 /* =====================================================
-   MODAL DE PRODUCTO
+   WHATSAPP DIRECTO PARA MÓVIL
+===================================================== */
+function abrirWhatsAppDirecto(productoId) {
+    const producto = productos.find(p => p.id === productoId);
+    
+    if (!producto) {
+        console.error('Producto no encontrado:', productoId);
+        return;
+    }
+    
+    console.log('Abriendo WhatsApp directo para:', producto.nombre);
+    
+    // Crear mensaje para WhatsApp
+    const mensaje = `Hola! Me interesa el ${producto.nombre} - ${producto.precio}. ¿Podrían darme más información?`;
+    const urlWhatsApp = `https://wa.me/51949823528?text=${encodeURIComponent(mensaje)}`;
+    
+    // Abrir WhatsApp directamente
+    window.open(urlWhatsApp, '_blank');
+}
+
+/* =====================================================
+   MODAL DE PRODUCTO (SOLO DESKTOP)
 ===================================================== */
 function abrirModalProducto(productoId) {
+    // Solo abrir modal en desktop
+    if (esMobile) {
+        abrirWhatsAppDirecto(productoId);
+        return;
+    }
+    
     const producto = productos.find(p => p.id === productoId);
     
     if (!producto) {
@@ -877,7 +902,6 @@ function abrirModalProducto(productoId) {
     document.getElementById('modal-img').src = producto.img;
     document.getElementById('modal-img').alt = producto.nombre;
     document.getElementById('modal-titulo').textContent = producto.nombre;
-    document.getElementById('modal-codigo').textContent = `Código: ${producto.codigo}`;
     // CORRECCIÓN: quitar '<' que estaba por error
     document.getElementById('modal-incluye').textContent = `Incluye: ${producto.incluye}`;
     document.getElementById('modal-descripcion').textContent = producto.desc;
@@ -885,7 +909,7 @@ function abrirModalProducto(productoId) {
     
     // Configurar botón de WhatsApp
     const whatsappBtn = document.getElementById('whatsapp-btn');
-    const mensaje = `Hola! Me interesa el ${producto.nombre} (${producto.codigo}) - ${producto.precio}. ¿Podrían darme más información?`;
+    const mensaje = `Hola! Me interesa el ${producto.nombre} - ${producto.precio}. ¿Podrían darme más información?`;
     whatsappBtn.href = `https://wa.me/51949823528?text=${encodeURIComponent(mensaje)}`;
     
     // Mostrar modal

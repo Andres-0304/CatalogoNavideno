@@ -618,11 +618,6 @@ body {
     margin-top: auto;
 }
 
-.producto-codigo {
-    font-size: 0.8rem;
-    color: var(--gris-medio);
-    font-weight: 600;
-}
 
 .producto-precio {
     font-size: 1.4rem;
@@ -1130,6 +1125,8 @@ body {
         letter-spacing: 1px;
         padding: 0.3rem 0.6rem;
     }
+    
+    /* Mejoras para productos móviles - estilos consolidados arriba */
 }
 
 /* =====================================================
@@ -1283,11 +1280,12 @@ body {
 .hoja-contenido {
     width: 100%;
     height: 100%;
-    padding: 2rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 /* =====================================================
@@ -1297,12 +1295,15 @@ body {
     background: var(--blanco-puro);
     display: flex;
     flex-direction: column;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 .hoja-header {
     text-align: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
     border-bottom: 2px solid var(--gris-claro);
 }
 
@@ -1315,29 +1316,23 @@ body {
     line-height: 1.2;
 }
 
-.hoja-codigo {
-    font-size: 0.9rem;
-    color: var(--gris-medio);
-    font-weight: 600;
-    background: var(--gris-claro);
-    padding: 0.3rem 0.8rem;
-    border-radius: 15px;
-    display: inline-block;
-}
 
 .hoja-imagen {
-    flex: 1;
+    flex: 0 0 auto;
     position: relative;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.8rem;
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    height: 200px;
+    max-height: 200px;
 }
 
 .hoja-imagen img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     transition: transform 0.3s ease;
 }
 
@@ -1357,30 +1352,34 @@ body {
 }
 
 .hoja-info {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.8rem;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .hoja-descripcion {
     color: var(--gris-texto);
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 0.6rem;
+    font-size: 0.9rem;
+    flex: 1;
 }
 
 .hoja-incluye {
     color: var(--dorado-rico);
     font-weight: 600;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.85rem;
 }
 
 .hoja-precio {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.8rem;
 }
 
 .hoja-precio .precio-valor {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     font-weight: 700;
     color: var(--rojo-navidad);
     text-shadow: 0 2px 4px rgba(185, 28, 28, 0.2);
@@ -1388,6 +1387,8 @@ body {
 
 .hoja-acciones {
     margin-top: auto;
+    flex-shrink: 0;
+    padding-top: 1rem;
 }
 
 .hoja-btn-whatsapp {
@@ -1395,10 +1396,10 @@ body {
     background: linear-gradient(135deg, #25D366, #128C7E);
     color: var(--blanco-puro);
     border: none;
-    padding: 1rem 1.5rem;
+    padding: 0.8rem 1.2rem;
     border-radius: 25px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
@@ -1416,6 +1417,22 @@ body {
 
 .whatsapp-icon {
     font-size: 1.2rem;
+}
+
+/* Asegurar que el botón de WhatsApp siempre sea visible y dentro de la hoja */
+.hoja-movil.hoja-producto {
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+.hoja-movil.hoja-producto .hoja-contenido {
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.hoja-movil.hoja-producto .hoja-btn-whatsapp {
+    display: flex !important;
+    flex-shrink: 0;
 }
 
 /* =====================================================
