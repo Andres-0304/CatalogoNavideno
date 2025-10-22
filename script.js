@@ -9,7 +9,7 @@ const productos = [
     { id:7, nombre:"Servilletero de Flor Dorada", titulo:"Elegancia Floral Dorada", descripcionCorta:"Diseño metálico en forma de flor dorada con centro rojo brillante.", descripcion:"Detalle de distinción y glamour para cenas sofisticadas.", imagen:"images/servilletero7.jpg", precio:"S/ 20.00" },
     { id:8, nombre:"Servilletero Lazo Escocés y Piñas", titulo:"Abrazo Invernal", descripcionCorta:"Lazo de tartán con piñas y ramas de pino.", descripcion:"Evoca el encanto de una cabaña en invierno con este servilletero rústico.", imagen:"images/servilletero8.jpg", precio:"S/ 17.00" }
 ];
-const WHATSAPP_NUMBER = "51949823528"; // ajusta aquí tu número
+const WHATSAPP_NUMBER = "949823528"; // ajusta aquí tu número
 
 /* ----------------- GENERAR PÁGINAS ----------------- */
 function generarPaginas(){
@@ -207,7 +207,7 @@ function abrirModalProducto(id){
     $('#modal-titulo').text(p.titulo);
     $('#modal-descripcion').text(p.descripcion);
     $('#modal-precio').text(p.precio);
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola,%20quiero%20más%20información%20sobre:%20' + p.nombre)}`;
+    const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}?&text=${encodeURIComponent('Hola quiero más información sobre: ' + p.nombre)}`;
     $('#modal-whatsapp').attr('href', url);
 
     $('#modal').fadeIn(200).attr('aria-hidden','false');
