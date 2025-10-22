@@ -300,7 +300,7 @@ function generarHojaProducto(producto, numeroHoja, container) {
             
             <div class="hoja-acciones">
                 <button class="hoja-btn-whatsapp" onclick="abrirModalProducto('${producto.id}')">
-                    <span class="whatsapp-icon">📱</span>
+                    <span class="whatsapp-icon"></span>
                     Consultar por WhatsApp
                 </button>
             </div>
@@ -328,12 +328,12 @@ function generarHojaContraportada(container) {
                     <h3>Contacto</h3>
                     <div class="contacto-info">
                         <div class="contacto-item">
-                            <span class="contacto-icon">📱</span>
+                            <span class="contacto-icon"></span>
                             <span>WhatsApp: +51 949 823 528</span>
                         </div>
                         <div class="contacto-item">
-                            <span class="contacto-icon">📧</span>
-                            <span>Email: navidad@tumesa.com</span>
+                            <span class="contacto-icon"></span>
+                            <span>IG: @nombre</span>
                         </div>
                     </div>
                 </div>
