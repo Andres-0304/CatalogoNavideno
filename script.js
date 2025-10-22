@@ -1,6 +1,9 @@
 /* =====================================================
    CATÁLOGO NAVIDAD EN TU MESA - SCRIPT PRINCIPAL
-   Funcionalidad completa del flipbook con productos navideños
+   Versión optimizada 2025.2
+   - Soporte completo para modo "una sola página" en móvil
+   - Comportamiento tipo libro físico
+   - Mismo diseño responsive y compatibilidad total
 ===================================================== */
 
 // Datos de productos del catálogo
@@ -79,7 +82,6 @@ const productos = [
     }
 ];
 
-// Variables globales
 let flipbook = null;
 let paginaActual = 0;
 let totalPaginas = 0;
@@ -100,18 +102,16 @@ const modalClose = document.getElementById('modal-close');
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Iniciando Catálogo Navidad en tu Mesa...');
     
-    // Detectar dispositivo
     detectarDispositivo();
-    
-    // Generar páginas
     generarPaginas();
     
-    // Inicializar flipbook
-    setTimeout(() => {
-        inicializarFlipbook();
-    }, 100);
+    if (!esMobile) {
+        // Solo inicializar flipbook para desktop
+        setTimeout(() => {
+            inicializarFlipbook();
+        }, 100);
+    }
     
-    // Configurar eventos
     configurarEventos();
     
     console.log('Catálogo inicializado correctamente');
@@ -124,14 +124,6 @@ function detectarDispositivo() {
     const anchoVentana = window.innerWidth;
     esMobile = anchoVentana <= 768;
     console.log(`Ancho de ventana: ${anchoVentana}px - Dispositivo: ${esMobile ? 'MÓVIL' : 'DESKTOP'}`);
-    
-    // Actualizar layout según dispositivo
-    actualizarLayoutResponsivo();
-}
-
-function actualizarLayoutResponsivo() {
-    // Layout ahora se maneja completamente por CSS con clases específicas
-    console.log(`Layout actualizado para: ${esMobile ? 'Catálogo Móvil' : 'Catálogo Desktop'}`);
 }
 
 /* =====================================================
@@ -141,12 +133,18 @@ function generarPaginas() {
     console.log('Generando páginas del catálogo...');
     console.log('Dispositivo móvil detectado:', esMobile);
     
-    // Dos catálogos diferentes pero con mismo efecto
-    const productosPorPagina = esMobile ? 1 : 2;
+    if (esMobile) {
+        // Cargar catálogo móvil completamente separado
+        cargarCatalogoMovil();
+        return;
+    }
+    
+    // CATÁLOGO DESKTOP ORIGINAL (sin modificaciones)
+    const productosPorPagina = 2;
     const paginasProductos = Math.ceil(productos.length / productosPorPagina);
     totalPaginas = paginasProductos + 1; // +1 por la portada
     
-    console.log(`Catálogo ${esMobile ? 'MÓVIL' : 'DESKTOP'}: ${productosPorPagina} productos por página`);
+    console.log(`Catálogo DESKTOP: ${productosPorPagina} productos por página`);
     console.log(`Total páginas: ${totalPaginas}`);
     
     // Actualizar contador
@@ -170,6 +168,184 @@ function generarPaginas() {
     }
     
     console.log(`Generadas ${totalPaginas} páginas`);
+}
+
+/* =====================================================
+   CATÁLOGO MÓVIL COMPLETAMENTE SEPARADO
+===================================================== */
+function cargarCatalogoMovil() {
+    console.log('Cargando catálogo móvil separado...');
+    
+    // Ocultar elementos del catálogo desktop
+    const flipbookContainer = document.getElementById('flipbook-container');
+    if (flipbookContainer) {
+        flipbookContainer.style.display = 'none';
+    }
+    
+    // Crear contenedor móvil
+    const mobileContainer = document.createElement('div');
+    mobileContainer.id = 'mobile-catalog-container';
+    mobileContainer.className = 'mobile-catalog-container';
+    
+    // Insertar en el contenedor principal
+    const mainContainer = document.querySelector('.main-container');
+    if (mainContainer) {
+        mainContainer.appendChild(mobileContainer);
+        
+        // Generar las 10 hojas móviles
+        generarHojasMoviles(mobileContainer);
+        
+        // Configurar navegación móvil
+        configurarNavegacionMovil();
+        
+        console.log('Catálogo móvil cargado correctamente');
+    } else {
+        console.error('No se encontró el contenedor principal');
+    }
+}
+
+function generarHojasMoviles(container) {
+    console.log('Generando 10 hojas individuales para móvil...');
+    
+    // Hoja 1: Portada
+    generarHojaPortada(container);
+    
+    // Hojas 2-9: Productos individuales
+    for (let i = 0; i < productos.length; i++) {
+        generarHojaProducto(productos[i], i + 2, container);
+    }
+    
+    // Hoja 10: Contraportada
+    generarHojaContraportada(container);
+    
+    // Verificar que se generaron las hojas
+    const hojasGeneradas = container.querySelectorAll('.hoja-movil');
+    console.log(`Hojas generadas: ${hojasGeneradas.length} de 10 esperadas`);
+    
+    if (hojasGeneradas.length === 0) {
+        console.error('No se generaron hojas móviles');
+    }
+}
+
+function generarHojaPortada(container) {
+    const hoja = document.createElement('div');
+    hoja.className = 'hoja-movil hoja-portada';
+    hoja.innerHTML = `
+        <div class="hoja-contenido">
+            <div class="portada-decoracion-fondo">
+                <div class="copo-nieve copo-1"></div>
+                <div class="copo-nieve copo-2"></div>
+                <div class="copo-nieve copo-3"></div>
+                <div class="copo-nieve copo-4"></div>
+                <div class="copo-nieve copo-5"></div>
+                <div class="copo-nieve copo-6"></div>
+            </div>
+            
+            <div class="portada-content">
+                <div class="portada-decoracion-superior">
+                    <div class="estrella-decorativa estrella-izq"></div>
+                    <div class="ramas-pino ramas-superior"></div>
+                    <div class="estrella-decorativa estrella-der"></div>
+                </div>
+                
+                <div class="portada-titulo-container">
+                    <h1 class="portada-titulo">Navidad en tu Mesa</h1>
+                    <div class="titulo-underline"></div>
+                </div>
+                
+                <p class="portada-subtitulo">Conjuntos exclusivos de servilletas y aros servilleteros</p>
+                
+                <div class="portada-elementos-centrales">
+                    <div class="campana-izq"></div>
+                    <div class="portada-año">Catálogo 2025</div>
+                    <div class="campana-der"></div>
+                </div>
+                
+                <div class="portada-decoracion-inferior">
+                    <div class="ramas-pino ramas-inferior"></div>
+                    <div class="texto-premium">EDICIÓN PREMIUM</div>
+                </div>
+                
+                <div class="portada-borde-decorativo"></div>
+            </div>
+        </div>
+    `;
+    container.appendChild(hoja);
+}
+
+function generarHojaProducto(producto, numeroHoja, container) {
+    const hoja = document.createElement('div');
+    hoja.className = 'hoja-movil hoja-producto';
+    hoja.innerHTML = `
+        <div class="hoja-contenido">
+            <div class="hoja-header">
+                <h2 class="hoja-titulo">${producto.nombre}</h2>
+                <div class="hoja-codigo">${producto.codigo}</div>
+            </div>
+            
+            <div class="hoja-imagen">
+                <img src="${producto.img}" alt="${producto.nombre}" loading="lazy" onerror="manejarErrorImagen(this)">
+                <div class="hoja-overlay"></div>
+            </div>
+            
+            <div class="hoja-info">
+                <p class="hoja-descripcion">${producto.desc}</p>
+                <div class="hoja-incluye">
+                    <strong>Incluye:</strong> ${producto.incluye}
+                </div>
+                <div class="hoja-precio">
+                    <span class="precio-valor">${producto.precio}</span>
+                </div>
+            </div>
+            
+            <div class="hoja-acciones">
+                <button class="hoja-btn-whatsapp" onclick="abrirModalProducto('${producto.id}')">
+                    <span class="whatsapp-icon">📱</span>
+                    Consultar por WhatsApp
+                </button>
+            </div>
+        </div>
+    `;
+    container.appendChild(hoja);
+}
+
+function generarHojaContraportada(container) {
+    const hoja = document.createElement('div');
+    hoja.className = 'hoja-movil hoja-contraportada';
+    hoja.innerHTML = `
+        <div class="hoja-contenido">
+            <div class="contraportada-content">
+                <div class="contraportada-titulo">
+                    <h2>¡Gracias por elegirnos!</h2>
+                </div>
+                
+                <div class="contraportada-mensaje">
+                    <p>Esperamos que hayas disfrutado de nuestro catálogo de conjuntos navideños exclusivos.</p>
+                    <p>Cada pieza está diseñada con amor y cuidado para hacer de tu mesa navideña un lugar especial.</p>
+                </div>
+                
+                <div class="contraportada-contacto">
+                    <h3>Contacto</h3>
+                    <div class="contacto-info">
+                        <div class="contacto-item">
+                            <span class="contacto-icon">📱</span>
+                            <span>WhatsApp: +51 949 823 528</span>
+                        </div>
+                        <div class="contacto-item">
+                            <span class="contacto-icon">📧</span>
+                            <span>Email: navidad@tumesa.com</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contraportada-footer">
+                    <p class="footer-texto">Navidad en tu Mesa - Catálogo 2025</p>
+                    <p class="footer-edicion">Edición Premium</p>
+                </div>
+            </div>
+        </div>
+    `;
+    container.appendChild(hoja);
 }
 
 function generarPortada() {
@@ -222,7 +398,6 @@ function generarPaginaProductos(productosParaPagina, numeroPagina) {
     
     console.log(`Generando página ${numeroPagina} con ${productosParaPagina.length} productos para ${esMobile ? 'MÓVIL' : 'DESKTOP'}`);
     
-    // Títulos temáticos para las páginas
     const titulosSeccion = [
         'Tradición Navideña',
         'Elegancia Festiva', 
@@ -256,7 +431,7 @@ function generarTarjetaProducto(producto) {
     return `
         <div class="tarjeta-producto" onclick="abrirModalProducto('${producto.id}')">
             <div class="tarjeta-imagen">
-                <img src="${producto.img}" alt="${producto.nombre}" loading="lazy">
+                <img src="${producto.img}" alt="${producto.nombre}" loading="lazy" onerror="manejarErrorImagen(this)">
                 <div class="overlay-gradient"></div>
             </div>
             <div class="tarjeta-info">
@@ -284,10 +459,9 @@ function inicializarFlipbook() {
             return;
         }
         
-        // Configuración original que funcionaba bien
         flipbook = new St.PageFlip(flipbookContainer, {
-            width: esMobile ? 350 : 600,
-            height: esMobile ? 500 : 700,
+            width: esMobile ? 360 : 600,
+            height: esMobile ? 520 : 700,
             size: 'stretch',
             minWidth: 300,
             maxWidth: 800,
@@ -297,25 +471,39 @@ function inicializarFlipbook() {
             mobileScrollSupport: false,
             swipeDistance: 50,
             clickEventForward: true,
-            usePortrait: false,
+            usePortrait: esMobile,                 // 👉 En móvil: modo retrato
+            display: esMobile ? "single" : "double", // 👉 1 página en móvil, 2 en desktop
             startPage: 0,
             drawShadow: true,
-            flippingTime: 800,
+            flippingTime: esMobile ? 1000 : 800,  // 👉 Animación más lenta en móvil para efecto hoja
             useMouseEvents: true,
-            showPageCorners: true,
+            showPageCorners: esMobile ? false : true, // 👉 Sin esquinas en móvil para efecto hoja limpia
             disableFlipByClick: false,
-            autoSize: false,
-            maxShadowOpacity: 0.5
+            autoSize: true,
+            maxShadowOpacity: esMobile ? 0.3 : 0.5, // 👉 Sombra más sutil en móvil
+            shadowSides: esMobile ? 0.8 : 1.0,       // 👉 Sombra más pronunciada en móvil
+            shadowFlip: esMobile ? 0.6 : 0.4         // 👉 Sombra durante el flip más visible
         });
         
-        // Eventos del flipbook
+        // Cargar páginas desde HTML generado
+        if (esMobile) {
+            flipbook.loadFromHTML(document.querySelectorAll('.hoja-movil'));
+        } else {
+            flipbook.loadFromHTML(document.querySelectorAll('.pagina'));
+        }
+        
+        // Eventos
         flipbook.on('flip', function(e) {
             console.log('Página cambiada:', e.data);
             paginaActual = e.data;
             actualizarNavegacion();
+            
+            // Aplicar efectos de hoja en móvil
+            if (esMobile) {
+                aplicarEfectosHojaMovil();
+            }
         });
         
-        // Solo eventos esenciales para todos los dispositivos
         flipbook.on('start', function(e) {
             console.log('Flipbook iniciado correctamente');
         });
@@ -323,20 +511,12 @@ function inicializarFlipbook() {
         flipbook.on('changeOrientation', function(e) {
             console.log('Orientación cambiada:', e.data);
             setTimeout(() => {
-                flipbook.updateState();
+                if (flipbook && typeof flipbook.updateState === 'function') flipbook.updateState();
             }, 100);
         });
         
-        flipbook.on('changeState', function(e) {
-            console.log('Estado cambiado:', e.data);
-        });
-        
-        // Cargar páginas
-        flipbook.loadFromHTML(document.querySelectorAll('.pagina'));
-        
-        // Verificación simple post-inicialización
         setTimeout(() => {
-            flipbook.updateState();
+            if (flipbook && typeof flipbook.updateState === 'function') flipbook.updateState();
             console.log('Flipbook actualizado - gestos nativos habilitados');
         }, 200);
         
@@ -357,22 +537,28 @@ function usarFallbackCarrusel() {
     flipbookContainer.style.overflow = 'hidden';
     flipbookContainer.style.position = 'relative';
     
-    const paginas = flipbookContainer.querySelectorAll('.pagina');
-    paginas.forEach((pagina, index) => {
-        pagina.style.position = 'absolute';
-        pagina.style.top = '0';
-        pagina.style.left = `${index * 100}%`;
-        pagina.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-        pagina.style.transform = 'translateX(0)';
+    const elementos = esMobile ? 
+        flipbookContainer.querySelectorAll('.hoja-movil') : 
+        flipbookContainer.querySelectorAll('.pagina');
+    
+    elementos.forEach((elemento, index) => {
+        elemento.style.position = 'absolute';
+        elemento.style.top = '0';
+        elemento.style.left = `${index * 100}%`;
+        elemento.style.transition = 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+        elemento.style.transform = 'translateX(0)';
     });
     
     actualizarCarrusel();
 }
 
 function actualizarCarrusel() {
-    const paginas = flipbookContainer.querySelectorAll('.pagina');
-    paginas.forEach((pagina, index) => {
-        pagina.style.transform = `translateX(-${paginaActual * 100}%)`;
+    const elementos = esMobile ? 
+        flipbookContainer.querySelectorAll('.hoja-movil') : 
+        flipbookContainer.querySelectorAll('.pagina');
+    
+    elementos.forEach((elemento, index) => {
+        elemento.style.transform = `translateX(-${paginaActual * 100}%)`;
     });
 }
 
@@ -406,25 +592,198 @@ function configurarEventos() {
             console.log('Cambio de dispositivo detectado, regenerando...');
             esMobile = nuevoEsMobile;
             regenerarCatalogo();
+        } else {
+            // si solo cambió tamaño pero mismo modo, actualizar flipbook si existe
+            if (flipbook && typeof flipbook.updateState === 'function') {
+                setTimeout(() => flipbook.updateState(), 100);
+            }
         }
     }, 300));
     
-    // Dejar que StPageFlip maneje todos los eventos nativamente
-    // Sin interferencia de eventos personalizados
+    // Eventos táctiles para efectos de hoja en móvil
+    if (esMobile) {
+        configurarGestosTactiles();
+    }
 }
 
-
-
-
-
-// Mantener la función original por compatibilidad
+/* Mantener la función original por compatibilidad */
 function configurarEventosTactiles() {
-    // Esta función ahora está deprecada en favor de configurarEventosHibridos
     console.log('Usando eventos híbridos para mejor compatibilidad móvil');
+}
+
+/* =====================================================
+   GESTOS TÁCTILES PARA EFECTOS DE HOJA
+===================================================== */
+function configurarGestosTactiles() {
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+    
+    const flipbookElement = document.getElementById('flipbook-container');
+    
+    // Eventos táctiles
+    flipbookElement.addEventListener('touchstart', function(e) {
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+        isDragging = false;
+    }, { passive: true });
+    
+    flipbookElement.addEventListener('touchmove', function(e) {
+        if (!isDragging) {
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - startX;
+            const deltaY = touch.clientY - startY;
+            
+            // Detectar si es un deslizamiento horizontal
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+                isDragging = true;
+                
+                // Aplicar efecto visual durante el deslizamiento
+                if (deltaX > 0 && paginaActual > 0) {
+                    // Deslizando hacia la derecha (anterior)
+                    aplicarEfectoColocarHoja();
+                } else if (deltaX < 0 && paginaActual < totalPaginas - 1) {
+                    // Deslizando hacia la izquierda (siguiente)
+                    aplicarEfectoSacarHoja();
+                }
+            }
+        }
+    }, { passive: true });
+    
+    flipbookElement.addEventListener('touchend', function(e) {
+        if (isDragging) {
+            const touch = e.changedTouches[0];
+            const deltaX = touch.clientX - startX;
+            
+            // Navegar según la dirección del deslizamiento
+            if (deltaX > 50 && paginaActual > 0) {
+                // Deslizamiento hacia la derecha - ir a anterior
+                paginaAnterior();
+            } else if (deltaX < -50 && paginaActual < totalPaginas - 1) {
+                // Deslizamiento hacia la izquierda - ir a siguiente
+                paginaSiguiente();
+            }
+        }
+        
+        isDragging = false;
+    }, { passive: true });
+    
+    console.log('Gestos táctiles configurados para efectos de hoja');
+}
+
+/* =====================================================
+   NAVEGACIÓN MÓVIL SEPARADA
+===================================================== */
+function configurarNavegacionMovil() {
+    console.log('Configurando navegación móvil...');
+    
+    // Variables para el catálogo móvil
+    let hojaActualMovil = 0;
+    const totalHojasMovil = 10;
+    
+    // Actualizar contador para móvil
+    if (totalPaginasSpan) totalPaginasSpan.textContent = totalHojasMovil;
+    if (paginaActualSpan) paginaActualSpan.textContent = hojaActualMovil + 1;
+    
+    // Mostrar/ocultar hojas
+    function mostrarHojaMovil(index) {
+        const hojas = document.querySelectorAll('#mobile-catalog-container .hoja-movil');
+        console.log(`Mostrando hoja ${index + 1} de ${hojas.length} hojas disponibles`);
+        
+        hojas.forEach((hoja, i) => {
+            if (i === index) {
+                hoja.style.display = 'block';
+                hoja.classList.add('hoja-activa');
+                console.log(`Hoja ${i + 1} activada`);
+            } else {
+                hoja.style.display = 'none';
+                hoja.classList.remove('hoja-activa');
+            }
+        });
+    }
+    
+    // Navegación anterior
+    function navegarAnteriorMovil() {
+        if (hojaActualMovil > 0) {
+            hojaActualMovil--;
+            mostrarHojaMovil(hojaActualMovil);
+            if (paginaActualSpan) paginaActualSpan.textContent = hojaActualMovil + 1;
+            actualizarBotonesMovil();
+        }
+    }
+    
+    // Navegación siguiente
+    function navegarSiguienteMovil() {
+        if (hojaActualMovil < totalHojasMovil - 1) {
+            hojaActualMovil++;
+            mostrarHojaMovil(hojaActualMovil);
+            if (paginaActualSpan) paginaActualSpan.textContent = hojaActualMovil + 1;
+            actualizarBotonesMovil();
+        }
+    }
+    
+    // Actualizar estado de botones
+    function actualizarBotonesMovil() {
+        if (btnAnterior) btnAnterior.disabled = hojaActualMovil === 0;
+        if (btnSiguiente) btnSiguiente.disabled = hojaActualMovil === totalHojasMovil - 1;
+    }
+    
+    // Configurar eventos de botones
+    if (btnAnterior) btnAnterior.onclick = navegarAnteriorMovil;
+    if (btnSiguiente) btnSiguiente.onclick = navegarSiguienteMovil;
+    
+    // Mostrar primera hoja
+    mostrarHojaMovil(0);
+    actualizarBotonesMovil();
+    
+    // Configurar gestos táctiles para móvil
+    configurarGestosMovil();
+    
+    console.log('Navegación móvil configurada');
+}
+
+function configurarGestosMovil() {
+    const mobileContainer = document.getElementById('mobile-catalog-container');
+    let startX = 0;
+    let isDragging = false;
+    
+    mobileContainer.addEventListener('touchstart', function(e) {
+        startX = e.touches[0].clientX;
+        isDragging = false;
+    }, { passive: true });
+    
+    mobileContainer.addEventListener('touchmove', function(e) {
+        if (!isDragging) {
+            const deltaX = e.touches[0].clientX - startX;
+            if (Math.abs(deltaX) > 10) {
+                isDragging = true;
+            }
+        }
+    }, { passive: true });
+    
+    mobileContainer.addEventListener('touchend', function(e) {
+        if (isDragging) {
+            const deltaX = e.changedTouches[0].clientX - startX;
+            
+            if (deltaX > 50) {
+                // Deslizar derecha - anterior
+                document.getElementById('btn-anterior').click();
+            } else if (deltaX < -50) {
+                // Deslizar izquierda - siguiente
+                document.getElementById('btn-siguiente').click();
+            }
+        }
+        isDragging = false;
+    }, { passive: true });
 }
 
 function paginaAnterior() {
     if (paginaActual > 0) {
+        if (esMobile) {
+            aplicarEfectoColocarHoja();
+        }
+        
         if (flipbook) {
             flipbook.flipPrev();
         } else {
@@ -437,6 +796,10 @@ function paginaAnterior() {
 
 function paginaSiguiente() {
     if (paginaActual < totalPaginas - 1) {
+        if (esMobile) {
+            aplicarEfectoSacarHoja();
+        }
+        
         if (flipbook) {
             flipbook.flipNext();
         } else {
@@ -452,6 +815,50 @@ function actualizarNavegacion() {
     
     btnAnterior.disabled = paginaActual === 0;
     btnSiguiente.disabled = paginaActual === totalPaginas - 1;
+}
+
+/* =====================================================
+   EFECTOS DE HOJA MÓVIL
+===================================================== */
+function aplicarEfectosHojaMovil() {
+    const hojas = document.querySelectorAll('.hoja-movil');
+    hojas.forEach((hoja, index) => {
+        // Remover clases anteriores
+        hoja.classList.remove('sacando', 'colocando', 'entering');
+        
+        // Aplicar efecto según la posición
+        if (index === paginaActual) {
+            hoja.classList.add('entering');
+        }
+    });
+}
+
+function aplicarEfectoSacarHoja() {
+    const hojas = document.querySelectorAll('.hoja-movil');
+    const hojaActual = hojas[paginaActual];
+    
+    if (hojaActual) {
+        hojaActual.classList.add('sacando');
+        
+        // Remover clase después de la animación
+        setTimeout(() => {
+            hojaActual.classList.remove('sacando');
+        }, 1200);
+    }
+}
+
+function aplicarEfectoColocarHoja() {
+    const hojas = document.querySelectorAll('.hoja-movil');
+    const hojaActual = hojas[paginaActual];
+    
+    if (hojaActual) {
+        hojaActual.classList.add('colocando');
+        
+        // Remover clase después de la animación
+        setTimeout(() => {
+            hojaActual.classList.remove('colocando');
+        }, 1200);
+    }
 }
 
 /* =====================================================
@@ -472,6 +879,7 @@ function abrirModalProducto(productoId) {
     document.getElementById('modal-img').alt = producto.nombre;
     document.getElementById('modal-titulo').textContent = producto.nombre;
     document.getElementById('modal-codigo').textContent = `Código: ${producto.codigo}`;
+    // CORRECCIÓN: quitar '<' que estaba por error
     document.getElementById('modal-incluye').textContent = `Incluye: ${producto.incluye}`;
     document.getElementById('modal-descripcion').textContent = producto.desc;
     document.getElementById('modal-precio-valor').textContent = producto.precio;
@@ -501,7 +909,7 @@ function regenerarCatalogo() {
     // Destruir flipbook actual si existe
     if (flipbook) {
         try {
-            flipbook.destroy();
+            if (typeof flipbook.destroy === 'function') flipbook.destroy();
         } catch (error) {
             console.log('Error al destruir flipbook:', error);
         }
@@ -518,7 +926,7 @@ function regenerarCatalogo() {
     setTimeout(() => {
         inicializarFlipbook();
         actualizarNavegacion();
-    }, 100);
+    }, 150);
 }
 
 /* =====================================================
@@ -545,7 +953,7 @@ function manejarErrorImagen(img) {
 // Agregar manejo de errores a las imágenes
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('error', function(e) {
-        if (e.target.tagName === 'IMG') {
+        if (e.target && e.target.tagName === 'IMG') {
             manejarErrorImagen(e.target);
         }
     }, true);
@@ -556,4 +964,4 @@ document.addEventListener('DOMContentLoaded', function() {
 ===================================================== */
 console.log('Script del catálogo cargado');
 console.log('Productos disponibles:', productos.length);
-console.log('Versión del catálogo: 2025.1.0');
+console.log('Versión del catálogo: 2025.2');

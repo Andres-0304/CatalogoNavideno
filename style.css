@@ -1074,6 +1074,42 @@ body {
         letter-spacing: 0.5px;
         padding: 0.3rem 0.6rem;
     }
+    
+    /* =====================================================
+       HOJAS MÓVILES - RESPONSIVE PEQUEÑO
+    ===================================================== */
+    .hoja-contenido {
+        padding: 1rem;
+    }
+    
+    .hoja-titulo {
+        font-size: 1.5rem;
+    }
+    
+    .hoja-descripcion {
+        font-size: 0.9rem;
+    }
+    
+    .hoja-precio .precio-valor {
+        font-size: 1.8rem;
+    }
+    
+    .hoja-btn-whatsapp {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .contraportada-titulo h2 {
+        font-size: 1.8rem;
+    }
+    
+    .contraportada-mensaje p {
+        font-size: 1rem;
+    }
+    
+    .contacto-item {
+        font-size: 0.9rem;
+    }
 }
 
 /* =====================================================
@@ -1160,4 +1196,534 @@ body {
 
 .color-verde {
     color: var(--verde-profundo);
+}
+
+/* =====================================================
+   CONTENEDOR MÓVIL SEPARADO
+===================================================== */
+.mobile-catalog-container {
+    width: 100%;
+    height: 600px;
+    position: relative;
+    display: none; /* Oculto por defecto, se muestra solo en móvil */
+    margin: 0 auto;
+    max-width: 400px;
+}
+
+@media (max-width: 768px) {
+    .mobile-catalog-container {
+        display: block !important;
+    }
+    
+    .flipbook-container {
+        display: none !important; /* Ocultar catálogo desktop en móvil */
+    }
+}
+
+/* =====================================================
+   SISTEMA DE HOJAS MÓVILES 2025
+   (Comportamiento como hojas individuales con animaciones naturales)
+===================================================== */
+
+/* =====================================================
+   HOJAS MÓVILES - ESTRUCTURA BASE
+===================================================== */
+.hoja-movil {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--blanco-puro);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    transform-style: preserve-3d;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, box-shadow;
+    display: none; /* Oculto por defecto */
+    z-index: 1;
+}
+
+.hoja-movil.hoja-activa {
+    display: block !important;
+    z-index: 10;
+    animation: hojaEntrada 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hoja-contenido {
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* =====================================================
+   HOJA PORTADA MÓVIL
+===================================================== */
+.hoja-portada {
+    background: linear-gradient(135deg, var(--verde-profundo) 0%, var(--rojo-navidad) 100%) !important;
+    color: var(--blanco-puro);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.hoja-portada .hoja-contenido {
+    padding: 1.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+/* =====================================================
+   HOJA PRODUCTO MÓVIL
+===================================================== */
+.hoja-producto {
+    background: var(--blanco-puro);
+    display: flex;
+    flex-direction: column;
+}
+
+.hoja-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--gris-claro);
+}
+
+.hoja-titulo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--negro-elegante);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.hoja-codigo {
+    font-size: 0.9rem;
+    color: var(--gris-medio);
+    font-weight: 600;
+    background: var(--gris-claro);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+.hoja-imagen {
+    flex: 1;
+    position: relative;
+    margin-bottom: 1.5rem;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.hoja-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.hoja-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hoja-producto:hover .hoja-overlay {
+    opacity: 1;
+}
+
+.hoja-info {
+    margin-bottom: 1.5rem;
+}
+
+.hoja-descripcion {
+    color: var(--gris-texto);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.hoja-incluye {
+    color: var(--dorado-rico);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.hoja-precio {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.hoja-precio .precio-valor {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--rojo-navidad);
+    text-shadow: 0 2px 4px rgba(185, 28, 28, 0.2);
+}
+
+.hoja-acciones {
+    margin-top: auto;
+}
+
+.hoja-btn-whatsapp {
+    width: 100%;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: var(--blanco-puro);
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.hoja-btn-whatsapp:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    background: linear-gradient(135deg, #128C7E, #25D366);
+}
+
+.whatsapp-icon {
+    font-size: 1.2rem;
+}
+
+/* =====================================================
+   HOJA CONTRAPORTADA MÓVIL
+===================================================== */
+.hoja-contraportada {
+    background: linear-gradient(135deg, var(--crema-papel) 0%, var(--blanco-puro) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.contraportada-content {
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.contraportada-titulo h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--verde-profundo);
+    margin-bottom: 2rem;
+    text-shadow: 0 2px 4px rgba(6, 95, 70, 0.1);
+}
+
+.contraportada-mensaje {
+    margin-bottom: 2.5rem;
+}
+
+.contraportada-mensaje p {
+    color: var(--gris-texto);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.contraportada-contacto {
+    margin-bottom: 2rem;
+}
+
+.contraportada-contacto h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--negro-elegante);
+    margin-bottom: 1rem;
+}
+
+.contacto-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.contacto-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    color: var(--gris-texto);
+    font-weight: 500;
+}
+
+.contacto-icon {
+    font-size: 1.2rem;
+}
+
+.contraportada-footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--gris-claro);
+}
+
+.footer-texto {
+    color: var(--gris-medio);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.footer-edicion {
+    color: var(--dorado-rico);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* =====================================================
+   ANIMACIONES DE HOJA NATURAL - EFECTO SACAR/COLOCAR
+===================================================== */
+@media (max-width: 768px) {
+    /* Efecto de hoja individual con rotación sutil */
+    .stf__item {
+        transform-style: preserve-3d !important;
+        transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        will-change: transform, box-shadow !important;
+    }
+    
+    /* Efecto de sacar hoja hacia la izquierda (AVANZAR) */
+    .stf__item.slide-out-left {
+        animation: sacarHojaIzquierda 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+    
+    /* Efecto de colocar hoja desde la derecha (RETROCEDER) */
+    .stf__item.slide-in-right {
+        animation: colocarHojaDerecha 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+    
+    /* Sombra dinámica durante el flip */
+    .stf__item.flipping {
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25) !important;
+        transform: rotateY(2deg) !important;
+    }
+    
+    /* Efecto de profundidad en las hojas */
+    .hoja-movil {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Efecto de pila de hojas - hojas detrás */
+    .hoja-movil::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        right: 2px;
+        bottom: 2px;
+        background: var(--blanco-puro);
+        border-radius: 13px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        z-index: -1;
+        opacity: 0.7;
+    }
+    
+    /* Segunda hoja en la pila */
+    .hoja-movil::after {
+        content: '';
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        right: 4px;
+        bottom: 4px;
+        background: var(--blanco-puro);
+        border-radius: 11px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        z-index: -2;
+        opacity: 0.5;
+    }
+    
+    /* Animación de entrada suave */
+    .hoja-movil.entering {
+        animation: hojaEntrada 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Rotación sutil al pasar la hoja */
+    .hoja-movil.flipping {
+        animation: hojaFlip 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Efecto de hoja siendo sacada */
+    .hoja-movil.sacando {
+        z-index: 10;
+        transform: translateX(-100%) rotateY(-15deg) scale(0.95);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Efecto de hoja siendo colocada */
+    .hoja-movil.colocando {
+        z-index: 10;
+        transform: translateX(100%) rotateY(15deg) scale(0.95);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+/* =====================================================
+   ANIMACIONES KEYFRAMES PARA HOJAS
+===================================================== */
+@keyframes hojaEntrada {
+    0% {
+        opacity: 0;
+        transform: translateX(30px) rotateY(5deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) rotateY(0deg);
+    }
+}
+
+@keyframes hojaFlip {
+    0% {
+        transform: rotateY(0deg) scale(1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    50% {
+        transform: rotateY(3deg) scale(1.02);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    }
+    100% {
+        transform: rotateY(0deg) scale(1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* =====================================================
+   ANIMACIONES DE SACAR/COLOCAR HOJAS
+===================================================== */
+@keyframes sacarHojaIzquierda {
+    0% {
+        transform: translateX(0) rotateY(0deg) scale(1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        z-index: 1;
+    }
+    25% {
+        transform: translateX(-20px) rotateY(-5deg) scale(0.98);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+    }
+    50% {
+        transform: translateX(-50px) rotateY(-10deg) scale(0.96);
+        box-shadow: 0 16px 50px rgba(0, 0, 0, 0.25);
+        z-index: 10;
+    }
+    75% {
+        transform: translateX(-80px) rotateY(-12deg) scale(0.94);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        z-index: 10;
+    }
+    100% {
+        transform: translateX(-120%) rotateY(-15deg) scale(0.92);
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+        z-index: 10;
+        opacity: 0;
+    }
+}
+
+@keyframes colocarHojaDerecha {
+    0% {
+        transform: translateX(120%) rotateY(15deg) scale(0.92);
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+        z-index: 10;
+        opacity: 0;
+    }
+    25% {
+        transform: translateX(80px) rotateY(12deg) scale(0.94);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        z-index: 10;
+        opacity: 0.7;
+    }
+    50% {
+        transform: translateX(50px) rotateY(10deg) scale(0.96);
+        box-shadow: 0 16px 50px rgba(0, 0, 0, 0.25);
+        z-index: 10;
+        opacity: 0.8;
+    }
+    75% {
+        transform: translateX(20px) rotateY(5deg) scale(0.98);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+        opacity: 0.9;
+    }
+    100% {
+        transform: translateX(0) rotateY(0deg) scale(1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        z-index: 1;
+        opacity: 1;
+    }
+}
+
+/* =====================================================
+   EFECTO DE PILA DE HOJAS
+===================================================== */
+@keyframes pilaHojas {
+    0% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    50% {
+        transform: translateY(-2px) scale(1.01);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* =====================================================
+   MEJORAS DE MODO MÓVIL 2025
+   (Para centrar y suavizar la experiencia de lectura)
+===================================================== */
+
+/* Centrar visualmente la página en modo "single" */
+@media (max-width: 768px) {
+  .stf__block {
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .stf__item {
+    margin: 0 auto !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    border-radius: 15px;
+  }
+}
+
+/* Suavizar animación en móviles */
+@media (max-width: 768px) {
+  .stf__parent,
+  .stf__block,
+  .stf__item {
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    will-change: transform;
+  }
 }

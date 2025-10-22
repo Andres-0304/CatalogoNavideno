@@ -2,12 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta viewport mejorado para evitar zoom accidental en móviles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Navidad en tu Mesa - Catálogo 2025</title>
-    
+
     <!-- Fuentes Google -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    
+
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -28,11 +29,11 @@
             <button id="btn-anterior" class="nav-btn nav-btn-prev" disabled>
                 <span>&larr;</span> Anterior
             </button>
-            
+
             <div class="contador-paginas">
                 <span id="pagina-actual">1</span> / <span id="total-paginas">5</span>
             </div>
-            
+
             <button id="btn-siguiente" class="nav-btn nav-btn-next">
                 Siguiente <span>&rarr;</span>
             </button>
@@ -51,8 +52,8 @@
 
     <!-- Modal de Producto -->
     <div id="modal-producto" class="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close" id="modal-close">&times;</button>
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+            <button class="modal-close" id="modal-close" aria-label="Cerrar">&times;</button>
             
             <div class="modal-body">
                 <div class="modal-imagen">
@@ -70,8 +71,8 @@
                     </div>
                     
                     <div class="modal-acciones">
-                        <a id="whatsapp-btn" class="whatsapp-btn" href="#" target="_blank">
-                            <span class="whatsapp-icon"></span>
+                        <a id="whatsapp-btn" class="whatsapp-btn" href="#" target="_blank" rel="noopener">
+                            <span class="whatsapp-icon">📱</span>
                             Consultar por WhatsApp
                         </a>
                     </div>
@@ -81,6 +82,7 @@
     </div>
 
     <!-- Scripts -->
+    <!-- Librería PageFlip (asegúrate que el CDN sea accesible desde tu entorno) -->
     <script src="https://unpkg.com/page-flip/dist/js/page-flip.browser.js"></script>
     <script src="script.js"></script>
 </body>
