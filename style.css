@@ -1110,6 +1110,26 @@ body {
     .contacto-item {
         font-size: 0.9rem;
     }
+    
+    /* Portada móvil en pantallas pequeñas */
+    .hoja-portada .portada-titulo {
+        font-size: 2rem;
+    }
+    
+    .hoja-portada .portada-subtitulo {
+        font-size: 1rem;
+    }
+    
+    .hoja-portada .portada-año {
+        font-size: 0.9rem;
+        padding: 0.4rem 1rem;
+    }
+    
+    .hoja-portada .texto-premium {
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+        padding: 0.3rem 0.6rem;
+    }
 }
 
 /* =====================================================
@@ -1234,7 +1254,6 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    background: var(--blanco-puro);
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
@@ -1245,10 +1264,20 @@ body {
     z-index: 1;
 }
 
+/* Fondo por defecto para hojas que no son portada */
+.hoja-movil:not(.pagina-portada) {
+    background: var(--blanco-puro);
+}
+
 .hoja-movil.hoja-activa {
     display: block !important;
     z-index: 10;
     animation: hojaEntrada 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Asegurar que la portada móvil mantenga su fondo degradado */
+.hoja-movil.pagina-portada {
+    background: linear-gradient(135deg, var(--verde-profundo) 0%, var(--rojo-navidad) 100%) !important;
 }
 
 .hoja-contenido {
@@ -1259,26 +1288,6 @@ body {
     flex-direction: column;
     position: relative;
     overflow: hidden;
-}
-
-/* =====================================================
-   HOJA PORTADA MÓVIL
-===================================================== */
-.hoja-portada {
-    background: linear-gradient(135deg, var(--verde-profundo) 0%, var(--rojo-navidad) 100%) !important;
-    color: var(--blanco-puro);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    position: relative;
-}
-
-.hoja-portada .hoja-contenido {
-    padding: 1.5rem;
-    justify-content: center;
-    align-items: center;
 }
 
 /* =====================================================
@@ -1530,8 +1539,8 @@ body {
         z-index: 1;
     }
     
-    /* Efecto de pila de hojas - hojas detrás */
-    .hoja-movil::before {
+    /* Efecto de pila de hojas - hojas detrás (excluir portada) */
+    .hoja-movil:not(.pagina-portada)::before {
         content: '';
         position: absolute;
         top: 2px;
@@ -1545,8 +1554,8 @@ body {
         opacity: 0.7;
     }
     
-    /* Segunda hoja en la pila */
-    .hoja-movil::after {
+    /* Segunda hoja en la pila (excluir portada) */
+    .hoja-movil:not(.pagina-portada)::after {
         content: '';
         position: absolute;
         top: 4px;

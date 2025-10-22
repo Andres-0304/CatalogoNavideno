@@ -229,45 +229,44 @@ function generarHojasMoviles(container) {
 
 function generarHojaPortada(container) {
     const hoja = document.createElement('div');
-    hoja.className = 'hoja-movil hoja-portada';
+    hoja.className = 'hoja-movil pagina pagina-portada';
+    
     hoja.innerHTML = `
-        <div class="hoja-contenido">
-            <div class="portada-decoracion-fondo">
-                <div class="copo-nieve copo-1"></div>
-                <div class="copo-nieve copo-2"></div>
-                <div class="copo-nieve copo-3"></div>
-                <div class="copo-nieve copo-4"></div>
-                <div class="copo-nieve copo-5"></div>
-                <div class="copo-nieve copo-6"></div>
+        <div class="portada-decoracion-fondo">
+            <div class="copo-nieve copo-1"></div>
+            <div class="copo-nieve copo-2"></div>
+            <div class="copo-nieve copo-3"></div>
+            <div class="copo-nieve copo-4"></div>
+            <div class="copo-nieve copo-5"></div>
+            <div class="copo-nieve copo-6"></div>
+        </div>
+        
+        <div class="portada-content">
+            <div class="portada-decoracion-superior">
+                <div class="estrella-decorativa estrella-izq"></div>
+                <div class="ramas-pino ramas-superior"></div>
+                <div class="estrella-decorativa estrella-der"></div>
             </div>
             
-            <div class="portada-content">
-                <div class="portada-decoracion-superior">
-                    <div class="estrella-decorativa estrella-izq"></div>
-                    <div class="ramas-pino ramas-superior"></div>
-                    <div class="estrella-decorativa estrella-der"></div>
-                </div>
-                
-                <div class="portada-titulo-container">
-                    <h1 class="portada-titulo">Navidad en tu Mesa</h1>
-                    <div class="titulo-underline"></div>
-                </div>
-                
-                <p class="portada-subtitulo">Conjuntos exclusivos de servilletas y aros servilleteros</p>
-                
-                <div class="portada-elementos-centrales">
-                    <div class="campana-izq"></div>
-                    <div class="portada-año">Catálogo 2025</div>
-                    <div class="campana-der"></div>
-                </div>
-                
-                <div class="portada-decoracion-inferior">
-                    <div class="ramas-pino ramas-inferior"></div>
-                    <div class="texto-premium">EDICIÓN PREMIUM</div>
-                </div>
-                
-                <div class="portada-borde-decorativo"></div>
+            <div class="portada-titulo-container">
+                <h1 class="portada-titulo">Navidad en tu Mesa</h1>
+                <div class="titulo-underline"></div>
             </div>
+            
+            <p class="portada-subtitulo">Conjuntos exclusivos de servilletas y aros servilleteros</p>
+            
+            <div class="portada-elementos-centrales">
+                <div class="campana-izq"></div>
+                <div class="portada-año">Catálogo 2025</div>
+                <div class="campana-der"></div>
+            </div>
+            
+            <div class="portada-decoracion-inferior">
+                <div class="ramas-pino ramas-inferior"></div>
+                <div class="texto-premium">EDICIÓN PREMIUM</div>
+            </div>
+            
+            <div class="portada-borde-decorativo"></div>
         </div>
     `;
     container.appendChild(hoja);
@@ -300,7 +299,7 @@ function generarHojaProducto(producto, numeroHoja, container) {
             
             <div class="hoja-acciones">
                 <button class="hoja-btn-whatsapp" onclick="abrirModalProducto('${producto.id}')">
-                    <span class="whatsapp-icon"></span>
+                    <span class="whatsapp-icon">📱</span>
                     Consultar por WhatsApp
                 </button>
             </div>
@@ -328,12 +327,12 @@ function generarHojaContraportada(container) {
                     <h3>Contacto</h3>
                     <div class="contacto-info">
                         <div class="contacto-item">
-                            <span class="contacto-icon"></span>
+                            <span class="contacto-icon">📱</span>
                             <span>WhatsApp: +51 949 823 528</span>
                         </div>
                         <div class="contacto-item">
-                            <span class="contacto-icon"></span>
-                            <span>IG: @nombre</span>
+                            <span class="contacto-icon">📧</span>
+                            <span>Email: navidad@tumesa.com</span>
                         </div>
                     </div>
                 </div>
