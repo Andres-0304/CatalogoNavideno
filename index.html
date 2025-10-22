@@ -1,60 +1,87 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Catálogo Navideño 2025 - Servilleteros Artesanales</title>
-
-<!-- Fuentes -->
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-<!-- Librerías: jQuery, turn.js y GSAP (animaciones fluidas) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<!-- Estilos -->
-<link rel="stylesheet" href="style.css" />
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navidad en tu Mesa - Catálogo 2025</title>
+    
+    <!-- Fuentes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="stage">
-    <div id="flipbook" aria-label="Catálogo navideño" role="application"></div>
-
-    <div id="page-indicator" class="page-indicator" style="display:none">
-        <span id="current-page">1</span> / <span id="total-pages">1</span>
-    </div>
-
-    <div class="controls" aria-hidden="false" style="justify-content:center;">
-        <button id="prev-btn" class="control-btn" aria-label="Anterior">← Anterior</button>
-        <button id="next-btn" class="control-btn" aria-label="Siguiente">Siguiente →</button>
-    </div>
-
-</div>
-
-<!-- Modal -->
-<div id="modal" class="modal" aria-hidden="true">
-    <div class="close-modal" id="close-modal" title="Cerrar">✕</div>
-    <div class="modal-content" role="dialog" aria-modal="true">
-        <div class="modal-grid">
-            <div>
-                <img id="modal-imagen" class="modal-imagen" src="" alt="Imagen del producto">
+    <!-- Header Fijo -->
+    <header class="header-fijo">
+        <div class="header-content">
+            <div class="logo-section">
+                <h1 class="logo-title">Navidad en tu Mesa</h1>
+                <p class="logo-subtitle">Conjuntos Exclusivos</p>
             </div>
-            <div class="modal-info">
-                <h2 id="modal-nombre" class="modal-nombre"></h2>
-                <div id="modal-titulo" class="modal-titulo"></div>
-                <p id="modal-descripcion" class="modal-desc"></p>
-                <div id="modal-precio" class="modal-precio"></div>
-                <div class="modal-botones">
-                    <a id="modal-whatsapp" class="btn btn-whatsapp" target="_blank" rel="noopener">Consultar por WhatsApp</a>
-                    <button id="modal-btn-cerrar" class="btn btn-cerrar">Cerrar</button>
+        </div>
+    </header>
+
+    <!-- Navegación Fija -->
+    <nav class="navegacion-fija">
+        <div class="nav-content">
+            <button id="btn-anterior" class="nav-btn nav-btn-prev" disabled>
+                <span>&larr;</span> Anterior
+            </button>
+            
+            <div class="contador-paginas">
+                <span id="pagina-actual">1</span> / <span id="total-paginas">5</span>
+            </div>
+            
+            <button id="btn-siguiente" class="nav-btn nav-btn-next">
+                Siguiente <span>&rarr;</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal -->
+    <main class="main-container">
+        <!-- Contenedor Flipbook -->
+        <div id="flipbook-container" class="flipbook-container">
+            <div id="flipbook" class="flipbook">
+                <!-- Las páginas se generarán dinámicamente -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Producto -->
+    <div id="modal-producto" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">&times;</button>
+            
+            <div class="modal-body">
+                <div class="modal-imagen">
+                    <img id="modal-img" src="" alt="">
+                </div>
+                
+                <div class="modal-info">
+                    <h2 id="modal-titulo" class="modal-titulo"></h2>
+                    <p id="modal-codigo" class="modal-codigo"></p>
+                    <p id="modal-incluye" class="modal-incluye"></p>
+                    <p id="modal-descripcion" class="modal-descripcion"></p>
+                    
+                    <div class="modal-precio">
+                        <span id="modal-precio-valor" class="precio-valor"></span>
+                    </div>
+                    
+                    <div class="modal-acciones">
+                        <a id="whatsapp-btn" class="whatsapp-btn" href="#" target="_blank">
+                            <span class="whatsapp-icon"></span>
+                            Consultar por WhatsApp
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Canvas para nieve -->
-<canvas id="snow-canvas" aria-hidden="true"></canvas>
-<script src="script.js"></script>
+    <!-- Scripts -->
+    <script src="https://unpkg.com/page-flip/dist/js/page-flip.browser.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
