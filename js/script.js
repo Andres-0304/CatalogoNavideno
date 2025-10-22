@@ -97,13 +97,18 @@ function createProductPages() {
   const pages = [];
   const productsPerPage = isMobile ? 1 : 2;
   
+  // Asegurar que los productos estén en el orden correcto
   for (let i = 0; i < productos.length; i += productsPerPage) {
     let pageContent = '<div class="page products-page">';
     
+    // Crear las tarjetas de productos para esta página
+    const productsInPage = [];
     for (let j = i; j < i + productsPerPage && j < productos.length; j++) {
-      pageContent += createProductCard(productos[j], j);
+      productsInPage.push(createProductCard(productos[j], j));
     }
     
+    // Agregar las tarjetas a la página
+    pageContent += productsInPage.join('');
     pageContent += '</div>';
     pages.push(pageContent);
   }
@@ -116,59 +121,76 @@ function generatePages() {
   const catalogoContainer = document.getElementById('catalogo');
   catalogoContainer.innerHTML = '';
   
+  // Crear todas las páginas en un solo string
+  let allPages = '';
+  
   // Crear portada
   const coverPage = createCoverPage();
-  catalogoContainer.innerHTML += coverPage;
+  allPages += coverPage;
   
   // Crear páginas de productos
   const productPages = createProductPages();
   productPages.forEach(page => {
-    catalogoContainer.innerHTML += page;
+    allPages += page;
   });
+  
+  // Asignar todo el contenido de una vez
+  catalogoContainer.innerHTML = allPages;
 }
 
 // Función para inicializar el flipbook
 function initializeFlipbook() {
   const catalogoContainer = document.getElementById('catalogo');
   
-  // Configuración responsive del flipbook
-  const config = {
-    width: isMobile ? 350 : 800,
-    height: isMobile ? 500 : 600,
-    size: 'stretch',
-    maxShadowOpacity: 0.5,
-    showCover: true,
-    mobileScrollSupport: true,
-    clickEventForward: true,
-    usePortrait: isMobile,
-    startPage: 0,
-    drawShadow: true,
-    flippingTime: 1000,
-    useMouseEvents: true,
-    swipeDistance: 30,
-    showPageCorners: true,
-    disableFlipByClick: false
-  };
-  
-  // Crear nueva instancia del flipbook
-  flipbook = new St.PageFlip(catalogoContainer, config);
-  
-  // Cargar las páginas
-  const pages = catalogoContainer.querySelectorAll('.page');
-  flipbook.loadFromHTML(pages);
-  
-  // Event listeners para el flipbook
-  flipbook.on('flip', (e) => {
-    currentPage = e.data;
+  // Esperar un momento para asegurar que el DOM esté completamente actualizado
+  setTimeout(() => {
+    // Configuración responsive del flipbook
+    const config = {
+      width: isMobile ? 350 : 800,
+      height: isMobile ? 500 : 600,
+      size: 'stretch',
+      maxShadowOpacity: 0.5,
+      showCover: true,
+      mobileScrollSupport: true,
+      clickEventForward: true,
+      usePortrait: isMobile,
+      startPage: 0,
+      drawShadow: true,
+      flippingTime: 1000,
+      useMouseEvents: true,
+      swipeDistance: 30,
+      showPageCorners: true,
+      disableFlipByClick: false
+    };
+    
+    // Crear nueva instancia del flipbook
+    flipbook = new St.PageFlip(catalogoContainer, config);
+    
+    // Cargar las páginas en orden
+    const pages = catalogoContainer.querySelectorAll('.page');
+    console.log(`Cargando ${pages.length} páginas en el flipbook`);
+    
+    // Verificar que las páginas estén en el orden correcto
+    pages.forEach((page, index) => {
+      console.log(`Página ${index}:`, page.className);
+    });
+    
+    flipbook.loadFromHTML(pages);
+    
+    // Event listeners para el flipbook
+    flipbook.on('flip', (e) => {
+      currentPage = e.data;
+      updateNavigationButtons();
+      console.log(`Página actual: ${currentPage}`);
+    });
+    
+    flipbook.on('changeOrientation', (e) => {
+      updateFlipbookSize();
+    });
+    
+    // Actualizar botones de navegación
     updateNavigationButtons();
-  });
-  
-  flipbook.on('changeOrientation', (e) => {
-    updateFlipbookSize();
-  });
-  
-  // Actualizar botones de navegación
-  updateNavigationButtons();
+  }, 100);
 }
 
 // Función para actualizar el tamaño del flipbook
@@ -281,13 +303,18 @@ function handleResize() {
   detectMobile();
   
   if (wasMobile !== isMobile) {
+    console.log('Cambio de dispositivo detectado, regenerando páginas...');
+    
+    // Destruir flipbook existente
+    if (flipbook) {
+      flipbook.destroy();
+      flipbook = null;
+    }
+    
     // Regenerar páginas si cambió el tipo de dispositivo
     generatePages();
     
     // Reinicializar flipbook
-    if (flipbook) {
-      flipbook.destroy();
-    }
     initializeFlipbook();
   } else {
     // Solo actualizar tamaño
@@ -305,8 +332,11 @@ function preloadImages() {
 
 // Función de inicialización principal
 function init() {
+  console.log('Inicializando catálogo...');
+  
   // Detectar tipo de dispositivo
   detectMobile();
+  console.log(`Dispositivo móvil: ${isMobile}`);
   
   // Precargar imágenes
   preloadImages();
@@ -340,7 +370,7 @@ function init() {
         page.classList.add('page-enter');
       }, index * 100);
     });
-  }, 500);
+  }, 1000);
 }
 
 // Función para manejar errores de carga de imágenes
