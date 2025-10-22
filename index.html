@@ -1,60 +1,63 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Catálogo Navideño 2025 - Servilleteros Artesanales</title>
-
-<!-- Fuentes -->
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-<!-- Librerías: jQuery, turn.js y GSAP (animaciones fluidas) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<!-- Estilos -->
-<link rel="stylesheet" href="style.css" />
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Navideño 2025</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- StPageFlip CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/st-pageflip@2.0.0/dist/css/page-flip.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="stage">
-    <div id="flipbook" aria-label="Catálogo navideño" role="application"></div>
-
-    <div id="page-indicator" class="page-indicator" style="display:none">
-        <span id="current-page">1</span> / <span id="total-pages">1</span>
+    <div class="container">
+        <header class="header">
+            <h1>Catálogo Navideño 2025</h1>
+            <p>Descubre nuestra colección exclusiva de servilleteros navideños</p>
+        </header>
+        
+        <div class="flipbook-container">
+            <div id="catalogo"></div>
+        </div>
+        
+        <div class="controls">
+            <button id="prevBtn" class="nav-btn">← Anterior</button>
+            <button id="nextBtn" class="nav-btn">Siguiente →</button>
+        </div>
     </div>
 
-    <div class="controls" aria-hidden="false" style="justify-content:center;">
-        <button id="prev-btn" class="control-btn" aria-label="Anterior">← Anterior</button>
-        <button id="next-btn" class="control-btn" aria-label="Siguiente">Siguiente →</button>
-    </div>
-
-</div>
-
-<!-- Modal -->
-<div id="modal" class="modal" aria-hidden="true">
-    <div class="close-modal" id="close-modal" title="Cerrar">✕</div>
-    <div class="modal-content" role="dialog" aria-modal="true">
-        <div class="modal-grid">
-            <div>
-                <img id="modal-imagen" class="modal-imagen" src="" alt="Imagen del producto">
-            </div>
-            <div class="modal-info">
-                <h2 id="modal-nombre" class="modal-nombre"></h2>
-                <div id="modal-titulo" class="modal-titulo"></div>
-                <p id="modal-descripcion" class="modal-desc"></p>
-                <div id="modal-precio" class="modal-precio"></div>
-                <div class="modal-botones">
-                    <a id="modal-whatsapp" class="btn btn-whatsapp" target="_blank" rel="noopener">Consultar por WhatsApp</a>
-                    <button id="modal-btn-cerrar" class="btn btn-cerrar">Cerrar</button>
+    <!-- Modal de producto -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modalImage" src="" alt="">
+                </div>
+                <div class="modal-info">
+                    <h2 id="modalTitle"></h2>
+                    <h3 id="modalSubtitle"></h3>
+                    <p id="modalDescription"></p>
+                    <div class="modal-price">
+                        <span id="modalPrice"></span>
+                    </div>
+                    <a id="whatsappBtn" href="#" target="_blank" class="whatsapp-btn">
+                        Consultar por WhatsApp
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Canvas para nieve -->
-<canvas id="snow-canvas" aria-hidden="true"></canvas>
-<script src="script.js"></script>
+    <!-- StPageFlip JS -->
+    <script src="https://cdn.jsdelivr.net/npm/st-pageflip@2.0.0/dist/js/page-flip.browser.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/script.js"></script>
 </body>
 </html>
