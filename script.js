@@ -373,7 +373,7 @@ function generarHojaProducto(producto, numeroHoja, container) {
                     </div>
                     ${producto.videos ? `
                     <div class="hoja-galeria-item" data-type="video">
-                        <video controls preload="metadata" muted autoplay="false">
+                        <video controls preload="metadata" muted>
                             <source src="${producto.videos}" type="video/mp4">
                             Tu navegador no soporta videos.
                         </video>
@@ -1237,15 +1237,7 @@ function mostrarGaleriaItem(index) {
             } else if (item.type === 'video') {
                 const video = galeriaItem.querySelector('video');
                 video.src = item.src;
-                video.muted = true;
-                video.volume = 0;
                 video.load();
-                
-                // Forzar que el video esté silenciado
-                video.addEventListener('loadeddata', function() {
-                    this.muted = true;
-                    this.volume = 0;
-                });
             }
         }
         
@@ -1302,19 +1294,6 @@ function cambiarHojaGaleria(element, index) {
     if (items[index]) {
         items[index].style.display = 'block';
         items[index].classList.add('active');
-        
-        // Si es un video, asegurar que esté silenciado
-        const video = items[index].querySelector('video');
-        if (video) {
-            video.muted = true;
-            video.volume = 0;
-            
-            // Forzar que el video esté silenciado
-            video.addEventListener('loadeddata', function() {
-                this.muted = true;
-                this.volume = 0;
-            });
-        }
     }
     
     // Activar dot correspondiente
