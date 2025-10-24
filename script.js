@@ -6,49 +6,6 @@
    - Mismo diseño responsive y compatibilidad total
 ===================================================== */
 
-// Security Hardening: Anti-tampering & Credential Protection
-(function() {
-    'use strict';
-    
-    // Anti-debugging protection
-    let devtools = {open: false, orientation: null};
-    const threshold = 160;
-    
-    setInterval(function() {
-        if (window.outerHeight - window.innerHeight > threshold || 
-            window.outerWidth - window.innerWidth > threshold) {
-            if (!devtools.open) {
-                devtools.open = true;
-                console.clear();
-                console.log('%cSecurity Alert: Developer tools detected', 'color: red; font-size: 20px;');
-            }
-        } else {
-            devtools.open = false;
-        }
-    }, 500);
-    
-    // Disable right-click context menu
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        return false;
-    });
-    
-    // Disable F12, Ctrl+Shift+I, Ctrl+U
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'F12' || 
-            (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-            (e.ctrlKey && e.key === 'u')) {
-            e.preventDefault();
-            return false;
-        }
-    });
-    
-    // Clear console on focus
-    window.addEventListener('focus', function() {
-        console.clear();
-    });
-})();
-
 // Array de productos (se cargará desde Firebase)
 let productos = [];
 
