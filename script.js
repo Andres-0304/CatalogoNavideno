@@ -546,7 +546,7 @@ function inicializarFlipbook() {
             showCover: true,
             mobileScrollSupport: false,
             swipeDistance: esMobile ? 0 : 50,        // 👉 Deshabilitar swipe en móvil
-            clickEventForward: false,                // 👉 Deshabilitar click forwarding
+            clickEventForward: true,
             usePortrait: esMobile,                 // 👉 En móvil: modo retrato
             display: esMobile ? "single" : "double", // 👉 1 página en móvil, 2 en desktop
             startPage: 0,
@@ -554,7 +554,7 @@ function inicializarFlipbook() {
             flippingTime: esMobile ? 1000 : 800,  // 👉 Animación más lenta en móvil para efecto hoja
             useMouseEvents: !esMobile,             // 👉 Solo mouse en desktop
             showPageCorners: esMobile ? false : true, // 👉 Sin esquinas en móvil para efecto hoja limpia
-            disableFlipByClick: false,             // 👉 Permitir click pero controlarlo manualmente
+            disableFlipByClick: esMobile,          // 👉 Deshabilitar click en móvil
             autoSize: true,
             maxShadowOpacity: esMobile ? 0.3 : 0.5, // 👉 Sombra más sutil en móvil
             shadowSides: esMobile ? 0.8 : 1.0,       // 👉 Sombra más pronunciada en móvil
@@ -914,7 +914,7 @@ function configurarNavegacionDesktop() {
     const flipbookElement = document.getElementById('flipbook');
     if (!flipbookElement) return;
     
-    // Interceptar todos los clics en el flipbook
+    // Interceptar clics ANTES de que PageFlip los procese
     flipbookElement.addEventListener('click', function(e) {
         console.log('Clic detectado en flipbook:', e.target);
         
@@ -947,9 +947,9 @@ function configurarNavegacionDesktop() {
         
         // Solo permitir navegación en áreas vacías
         console.log('Clic en área vacía - navegación permitida');
-    }, true); // Usar capture para interceptar antes que PageFlip
+    }, true); // Usar capture para interceptar ANTES que PageFlip
     
-    // También interceptar eventos de mouse en las páginas
+    // También interceptar eventos en las páginas individuales
     const paginas = document.querySelectorAll('.pagina');
     paginas.forEach((pagina, index) => {
         pagina.addEventListener('click', function(e) {
