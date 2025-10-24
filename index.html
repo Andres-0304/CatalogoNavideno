@@ -105,15 +105,15 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getFirestore, collection, getDocs, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         
-        // Firebase configuration
+        // Firebase configuration from Netlify environment variables
         const firebaseConfig = {
-            apiKey: "AIzaSyA3OvglK2Qcmi20kBp_q--zwesFE8c77IM",
-            authDomain: "servilletasnavidenas.firebaseapp.com",
-            projectId: "servilletasnavidenas",
-            storageBucket: "servilletasnavidenas.firebasestorage.app",
-            messagingSenderId: "484584775953",
-            appId: "1:484584775953:web:817077cb2f184b69a92cb0",
-            measurementId: "G-8QC2ZXW0DC"
+            apiKey: window.FIREBASE_API_KEY,
+            authDomain: window.FIREBASE_AUTH_DOMAIN,
+            projectId: window.FIREBASE_PROJECT_ID,
+            storageBucket: window.FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: window.FIREBASE_MESSAGING_SENDER_ID,
+            appId: window.FIREBASE_APP_ID,
+            measurementId: window.FIREBASE_MEASUREMENT_ID
         };
         
         // Initialize Firebase
