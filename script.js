@@ -325,8 +325,8 @@ function generarHojaProducto(producto, numeroHoja, container) {
             <div class="hoja-galeria">
                 <div class="hoja-galeria-contenedor">
                     <div class="hoja-galeria-item active" data-type="image">
-                        <img src="${producto.img}" alt="${producto.nombre}" loading="lazy" onerror="manejarErrorImagen(this)">
-                        <div class="hoja-overlay"></div>
+                <img src="${producto.img}" alt="${producto.nombre}" loading="lazy" onerror="manejarErrorImagen(this)">
+                <div class="hoja-overlay"></div>
                     </div>
                     ${producto.videos ? `
                     <div class="hoja-galeria-item" data-type="video">
@@ -586,6 +586,11 @@ function inicializarFlipbook() {
             }
         });
         
+        // Configurar navegación solo en áreas vacías (desktop)
+        if (!esMobile) {
+            configurarNavegacionDesktop();
+        }
+        
         flipbook.on('start', function(e) {
             console.log('Flipbook iniciado correctamente');
         });
@@ -825,6 +830,9 @@ function configurarNavegacionMovil() {
     // Configurar gestos táctiles para móvil (solo un sistema)
     configurarGestosMovil();
     
+    // Configurar gestos de galería móvil
+    configurarGestosGaleriaMovil();
+    
     console.log('Navegación móvil configurada');
 }
 
@@ -896,7 +904,122 @@ function configurarGestosMovil() {
     console.log('Gestos táctiles configurados correctamente');
 }
 
-// Función eliminada para evitar conflictos de navegación múltiple
+/* =====================================================
+   NAVEGACIÓN DESKTOP OPTIMIZADA
+===================================================== */
+function configurarNavegacionDesktop() {
+    console.log('Configurando navegación desktop optimizada...');
+    
+    // Deshabilitar navegación por clic en productos
+    const flipbookElement = document.getElementById('flipbook');
+    if (!flipbookElement) return;
+    
+    flipbookElement.addEventListener('click', function(e) {
+        // Verificar si el clic fue en un producto
+        const producto = e.target.closest('.producto-tarjeta');
+        if (producto) {
+            console.log('Clic en producto - navegación deshabilitada');
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Verificar si el clic fue en el modal
+        const modal = e.target.closest('.modal-overlay');
+        if (modal) {
+            console.log('Clic en modal - navegación deshabilitada');
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Solo permitir navegación en áreas vacías
+        console.log('Clic en área vacía - navegación permitida');
+    });
+    
+    console.log('Navegación desktop configurada');
+}
+
+/* =====================================================
+   GESTOS DEL MODAL DESKTOP
+===================================================== */
+function configurarGestosModal() {
+    const galeriaContenedor = document.querySelector('.galeria-contenedor');
+    if (!galeriaContenedor) return;
+    
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+    
+    // Eventos táctiles
+    galeriaContenedor.addEventListener('touchstart', function(e) {
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+        isDragging = false;
+    }, { passive: true });
+    
+    galeriaContenedor.addEventListener('touchmove', function(e) {
+        if (!isDragging) {
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - startX;
+            const deltaY = touch.clientY - startY;
+            
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 15) {
+                isDragging = true;
+            }
+        }
+    }, { passive: true });
+    
+    galeriaContenedor.addEventListener('touchend', function(e) {
+        if (isDragging) {
+            const touch = e.changedTouches[0];
+            const deltaX = touch.clientX - startX;
+            
+            if (deltaX > 50) {
+                // Swipe derecha - anterior
+                cambiarGaleriaItem(-1);
+            } else if (deltaX < -50) {
+                // Swipe izquierda - siguiente
+                cambiarGaleriaItem(1);
+            }
+        }
+        isDragging = false;
+    }, { passive: true });
+    
+    // Eventos de ratón para desktop
+    let mouseStartX = 0;
+    let mouseIsDragging = false;
+    
+    galeriaContenedor.addEventListener('mousedown', function(e) {
+        mouseStartX = e.clientX;
+        mouseIsDragging = false;
+    });
+    
+    galeriaContenedor.addEventListener('mousemove', function(e) {
+        if (e.buttons === 1) { // Botón izquierdo presionado
+            const deltaX = e.clientX - mouseStartX;
+            if (Math.abs(deltaX) > 15) {
+                mouseIsDragging = true;
+            }
+        }
+    });
+    
+    galeriaContenedor.addEventListener('mouseup', function(e) {
+        if (mouseIsDragging) {
+            const deltaX = e.clientX - mouseStartX;
+            
+            if (deltaX > 50) {
+                // Drag derecha - anterior
+                cambiarGaleriaItem(-1);
+            } else if (deltaX < -50) {
+                // Drag izquierda - siguiente
+                cambiarGaleriaItem(1);
+            }
+        }
+        mouseIsDragging = false;
+    });
+    
+    console.log('Gestos del modal configurados');
+}
 
 function paginaAnterior() {
     if (paginaActual > 0) {
@@ -1137,6 +1260,93 @@ function cambiarHojaGaleria(element, index) {
 }
 
 /* =====================================================
+   GESTOS DE GALERÍA MÓVIL
+===================================================== */
+function configurarGestosGaleriaMovil() {
+    console.log('Configurando gestos de galería móvil...');
+    
+    // Agregar gestos a todas las galerías móviles
+    const galerias = document.querySelectorAll('.hoja-galeria');
+    galerias.forEach((galeria, index) => {
+        let startX = 0;
+        let startY = 0;
+        let isDragging = false;
+        let isHorizontalSwipe = false;
+        
+        galeria.addEventListener('touchstart', function(e) {
+            const touch = e.touches[0];
+            startX = touch.clientX;
+            startY = touch.clientY;
+            isDragging = false;
+            isHorizontalSwipe = false;
+            
+            // Prevenir propagación para evitar cambio de hoja
+            e.stopPropagation();
+        }, { passive: true });
+        
+        galeria.addEventListener('touchmove', function(e) {
+            if (!isDragging) {
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - startX;
+                const deltaY = touch.clientY - startY;
+                
+                // Detectar si es un deslizamiento horizontal
+                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 15) {
+                    isDragging = true;
+                    isHorizontalSwipe = true;
+                    console.log('Swipe horizontal en galería detectado');
+                    
+                    // Prevenir propagación para evitar cambio de hoja
+                    e.stopPropagation();
+                } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 15) {
+                    isDragging = true;
+                    isHorizontalSwipe = false;
+                }
+            }
+        }, { passive: true });
+        
+        galeria.addEventListener('touchend', function(e) {
+            if (isDragging && isHorizontalSwipe) {
+                const touch = e.changedTouches[0];
+                const deltaX = touch.clientX - startX;
+                
+                console.log('Swipe en galería - deltaX:', deltaX);
+                
+                // Prevenir propagación para evitar cambio de hoja
+                e.stopPropagation();
+                
+                if (deltaX > 50) {
+                    // Swipe derecha - anterior en galería
+                    const dots = galeria.querySelectorAll('.hoja-galeria-dot');
+                    const activeDot = galeria.querySelector('.hoja-galeria-dot.active');
+                    if (activeDot) {
+                        const currentIndex = parseInt(activeDot.getAttribute('data-index'));
+                        if (currentIndex > 0) {
+                            cambiarHojaGaleria(activeDot, currentIndex - 1);
+                        }
+                    }
+                } else if (deltaX < -50) {
+                    // Swipe izquierda - siguiente en galería
+                    const dots = galeria.querySelectorAll('.hoja-galeria-dot');
+                    const activeDot = galeria.querySelector('.hoja-galeria-dot.active');
+                    if (activeDot) {
+                        const currentIndex = parseInt(activeDot.getAttribute('data-index'));
+                        if (currentIndex < dots.length - 1) {
+                            cambiarHojaGaleria(activeDot, currentIndex + 1);
+                        }
+                    }
+                }
+            }
+            
+            isDragging = false;
+            isHorizontalSwipe = false;
+        }, { passive: true });
+    });
+    
+    console.log(`Gestos configurados en ${galerias.length} galerías móviles`);
+}
+
+/* =====================================================
    MODAL DE PRODUCTO (SOLO DESKTOP)
 ===================================================== */
 function abrirModalProducto(productoId) {
@@ -1172,6 +1382,9 @@ function abrirModalProducto(productoId) {
     // Mostrar modal
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+    
+    // Configurar gestos para la galería del modal
+    configurarGestosModal();
 }
 
 function cerrarModal() {
@@ -1212,9 +1425,9 @@ function regenerarCatalogo() {
     
     // Reinicializar flipbook solo si no es móvil
     if (!esMobile) {
-        setTimeout(() => {
-            inicializarFlipbook();
-            actualizarNavegacion();
+    setTimeout(() => {
+        inicializarFlipbook();
+        actualizarNavegacion();
         }, 200);
     } else {
         // Para móvil, solo actualizar navegación
