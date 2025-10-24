@@ -699,6 +699,42 @@ body {
 }
 
 /* =====================================================
+   NAVEGACIÓN DESKTOP OPTIMIZADA
+===================================================== */
+/* Prevenir navegación en productos desktop */
+.producto-tarjeta {
+    pointer-events: auto;
+    position: relative;
+    z-index: 10;
+}
+
+.producto-tarjeta * {
+    pointer-events: auto;
+}
+
+/* Áreas de navegación en desktop */
+.pagina {
+    position: relative;
+}
+
+.pagina::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: auto;
+}
+
+.pagina .producto-tarjeta {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+/* =====================================================
    GALERÍA DEL MODAL
 ===================================================== */
 .modal-galeria {
