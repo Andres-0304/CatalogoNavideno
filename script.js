@@ -6,81 +6,8 @@
    - Mismo diseño responsive y compatibilidad total
 ===================================================== */
 
-// Datos de productos del catálogo
-const productos = [
-    {
-        id: "conjunto1",
-        nombre: "Conjunto 'Árbol Navideño'",
-        desc: "Elegante conjunto de servilleta con diseño de árbol navideño tradicional en tonos verde y dorado, acompañado de aro servilletero metálico con acabado dorado. Perfecto para cenas navideñas familiares.",
-        precio: "S/ 28.00",
-        img: "images/servilleta_arbol.jpg",
-        codigo: "NAV-001",
-        incluye: "1 Servilleta + 1 Aro Servilletero"
-    },
-    {
-        id: "conjunto2",
-        nombre: "Conjunto 'Estrella Brillante'",
-        desc: "Servilleta con estampado de estrella navideña en colores plateado y azul, complementada con aro servilletero con detalles estrellados. Ideal para una mesa navideña moderna y sofisticada.",
-        precio: "S/ 32.00",
-        img: "images/servilleta_estrella.jpg",
-        codigo: "NAV-002",
-        incluye: "1 Servilleta + 1 Aro Servilletero"
-    },
-    {
-        id: "conjunto3",
-        nombre: "Conjunto 'Reno Mágico'",
-        desc: "Conjunto con diseño tierno de reno navideño sobre fondo crema, acompañado de aro servilletero con motivos de cuernos de reno. Perfecto para crear un ambiente cálido y acogedor.",
-        precio: "S/ 30.00",
-        img: "images/servilleta_reno.jpg",
-        codigo: "NAV-003",
-        incluye: "1 Servilleta + 1 Aro Servilletero"
-    },
-    {
-        id: "conjunto4",
-        nombre: "Conjunto 'Casa Navideña'",
-        desc: "Servilleta con ilustración de casa navideña con nieve y luces, complementada con aro servilletero en forma de casita. Evoca la magia de la navidad en el hogar.",
-        precio: "S/ 35.00",
-        img: "images/servilleta_casa.jpg",
-        codigo: "NAV-004",
-        incluye: "1 Servilleta + 1 Aro Servilletero"
-    },
-    {
-        id: "conjunto5",
-        nombre: "Conjunto 'Campana Dorada'",
-        desc: "Elegante servilleta con diseño de campanas navideñas en tonos dorados, acompañada de aro servilletero con forma de campana. Simboliza la alegría y celebración navideña.",
-        precio: "S/ 29.00",
-        img: "images/servilleta_campana.jpg",
-        codigo: "NAV-005",
-        incluye: "1 Servilleta + 1 Aro Servilletero"
-    },
-    {
-        id: "conjunto6",
-        nombre: "Conjunto 'Flor de Nochebuena'",
-        desc: "Servilleta con estampado de flores de nochebuena en rojo intenso, complementada con aro servilletero floral. Representa la tradición y belleza navideña mexicana.",
-        precio: "S/ 33.00",
-        img: "images/servilleta_flor.jpg",
-        codigo: "NAV-006",
-        incluye: "1 Servilleta + 1 Aro Servilletero"
-    },
-    {
-        id: "conjunto7",
-        nombre: "Conjunto 'Santa Claus'",
-        desc: "Servilleta con diseño divertido de Santa Claus, acompañada de aro servilletero con motivos navideños. Ideal para cenas familiares con niños y crear un ambiente festivo.",
-        precio: "S/ 31.00",
-        img: "images/servilleta_santa.jpg",
-        codigo: "NAV-007",
-        incluye: "1 Servilleta + 1 Aro Servilletero"
-    },
-    {
-        id: "conjunto8",
-        nombre: "Conjunto 'Árbol Premium'",
-        desc: "Versión premium del conjunto de árbol navideño con acabados especiales y materiales de alta calidad. Servilleta con bordados dorados y aro servilletero de acero inoxidable.",
-        precio: "S/ 42.00",
-        img: "images/servilleta_arbol2.jpg",
-        codigo: "NAV-008",
-        incluye: "1 Servilleta + 1 Aro Servilletero"
-    }
-];
+// Array de productos (se cargará desde Firebase)
+let productos = [];
 
 let flipbook = null;
 let paginaActual = 0;
@@ -97,10 +24,120 @@ const modal = document.getElementById('modal-producto');
 const modalClose = document.getElementById('modal-close');
 
 /* =====================================================
+   FIREBASE INTEGRATION
+===================================================== */
+
+// Función para cargar productos desde Firebase
+async function cargarProductosFirebase() {
+    try {
+        console.log('Cargando productos desde Firebase...');
+        
+        if (!window.db || !window.getDocs || !window.collection) {
+            console.error('Firebase no está disponible');
+            return false;
+        }
+        
+        const productosRef = window.collection(window.db, 'productos');
+        const snapshot = await window.getDocs(productosRef);
+        
+        productos = [];
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            productos.push({
+                id: doc.id,
+                nombre: data.nombre,
+                desc: data.desc,
+                precio: data.precio,
+                img: data.img,
+                incluye: data.incluye,
+                videos: data.videos || null // Campo opcional para videos
+            });
+        });
+        
+        console.log(`Productos cargados desde Firebase: ${productos.length}`);
+        console.log('Productos:', productos);
+        
+        return true;
+    } catch (error) {
+        console.error('Error cargando productos desde Firebase:', error);
+        return false;
+    }
+}
+
+// Función para configurar actualizaciones en tiempo real
+function configurarActualizacionesTiempoReal() {
+    if (!window.db || !window.onSnapshot || !window.collection) {
+        console.log('Firebase no disponible para tiempo real');
+        return;
+    }
+    
+    try {
+        const productosRef = window.collection(window.db, 'productos');
+        window.onSnapshot(productosRef, (snapshot) => {
+            console.log('Actualización en tiempo real detectada');
+            
+            // Verificar si realmente hay cambios
+            const nuevosProductos = [];
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                nuevosProductos.push({
+                    id: doc.id,
+                    nombre: data.nombre,
+                    desc: data.desc,
+                    precio: data.precio,
+                    img: data.img,
+                    incluye: data.incluye,
+                    videos: data.videos || null
+                });
+            });
+            
+            // Solo regenerar si hay cambios reales
+            if (JSON.stringify(nuevosProductos) !== JSON.stringify(productos)) {
+                console.log('Cambios detectados, regenerando catálogo...');
+                productos = nuevosProductos;
+                regenerarCatalogo();
+            } else {
+                console.log('Sin cambios detectados, manteniendo catálogo actual');
+            }
+        });
+        console.log('Actualizaciones en tiempo real configuradas');
+    } catch (error) {
+        console.error('Error configurando tiempo real:', error);
+    }
+}
+
+/* =====================================================
    INICIALIZACIÓN
 ===================================================== */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     console.log('Iniciando Catálogo Navidad en tu Mesa...');
+    
+    // Esperar a que Firebase esté disponible
+    let firebaseReady = false;
+    let attempts = 0;
+    const maxAttempts = 50; // 5 segundos máximo
+    
+    while (!firebaseReady && attempts < maxAttempts) {
+        if (window.db && window.getDocs && window.collection) {
+            firebaseReady = true;
+        } else {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+    }
+    
+    if (!firebaseReady) {
+        console.error('Firebase no se cargó en el tiempo esperado');
+        return;
+    }
+    
+    // Cargar productos desde Firebase
+    const productosCargados = await cargarProductosFirebase();
+    
+    if (!productosCargados || productos.length === 0) {
+        console.error('No se pudieron cargar los productos');
+        return;
+    }
     
     detectarDispositivo();
     generarPaginas();
@@ -113,8 +150,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     configurarEventos();
+    configurarActualizacionesTiempoReal();
     
-    console.log('Catálogo inicializado correctamente');
+    console.log('Catálogo inicializado correctamente con Firebase');
 });
 
 /* =====================================================
@@ -281,9 +319,28 @@ function generarHojaProducto(producto, numeroHoja, container) {
                 <h2 class="hoja-titulo">${producto.nombre}</h2>
             </div>
             
-            <div class="hoja-imagen">
-                <img src="${producto.img}" alt="${producto.nombre}" loading="lazy" onerror="manejarErrorImagen(this)">
-                <div class="hoja-overlay"></div>
+            <div class="hoja-galeria">
+                <div class="hoja-galeria-contenedor">
+                    <div class="hoja-galeria-item active" data-type="image">
+                        <img src="${producto.img}" alt="${producto.nombre}" loading="lazy" onerror="manejarErrorImagen(this)">
+                        <div class="hoja-overlay"></div>
+                    </div>
+                    ${producto.videos ? `
+                    <div class="hoja-galeria-item" data-type="video">
+                        <video controls preload="metadata" muted>
+                            <source src="${producto.videos}" type="video/mp4">
+                            Tu navegador no soporta videos.
+                        </video>
+                        <div class="hoja-overlay"></div>
+                    </div>
+                    ` : ''}
+                </div>
+                ${producto.videos ? `
+                <div class="hoja-galeria-indicadores">
+                    <span class="hoja-galeria-dot active" data-index="0" onclick="cambiarHojaGaleria(this, 0)"></span>
+                    <span class="hoja-galeria-dot" data-index="1" onclick="cambiarHojaGaleria(this, 1)"></span>
+                </div>
+                ` : ''}
             </div>
             
             <div class="hoja-info">
@@ -298,7 +355,7 @@ function generarHojaProducto(producto, numeroHoja, container) {
             
             <div class="hoja-acciones">
                 <button class="hoja-btn-whatsapp" onclick="abrirWhatsAppDirecto('${producto.id}')">
-                    <span class="whatsapp-icon"> </span>
+                    <span class="whatsapp-icon">📱</span>
                     Consultar por WhatsApp
                 </button>
             </div>
@@ -326,11 +383,11 @@ function generarHojaContraportada(container) {
                     <h3>Contacto</h3>
                     <div class="contacto-info">
                         <div class="contacto-item">
-                            <span class="contacto-icon"> </span>
+                            <span class="contacto-icon">📱</span>
                             <span>WhatsApp: +51 949 823 528</span>
                         </div>
                         <div class="contacto-item">
-                            <span class="contacto-icon"></span>
+                            <span class="contacto-icon">📧</span>
                             <span>Email: navidad@tumesa.com</span>
                         </div>
                     </div>
@@ -456,6 +513,25 @@ function inicializarFlipbook() {
             return;
         }
         
+        // Verificar que el contenedor existe y tiene contenido
+        if (!flipbookContainer || flipbookContainer.children.length === 0) {
+            console.error('Contenedor flipbook vacío o no existe');
+            usarFallbackCarrusel();
+            return;
+        }
+        
+        // Destruir flipbook anterior si existe
+        if (flipbook) {
+            try {
+                if (typeof flipbook.destroy === 'function') {
+                    flipbook.destroy();
+                }
+            } catch (error) {
+                console.log('Error al destruir flipbook anterior:', error);
+            }
+            flipbook = null;
+        }
+        
         flipbook = new St.PageFlip(flipbookContainer, {
             width: esMobile ? 360 : 600,
             height: esMobile ? 520 : 700,
@@ -483,11 +559,17 @@ function inicializarFlipbook() {
         });
         
         // Cargar páginas desde HTML generado
-        if (esMobile) {
-            flipbook.loadFromHTML(document.querySelectorAll('.hoja-movil'));
-        } else {
-            flipbook.loadFromHTML(document.querySelectorAll('.pagina'));
+        const paginas = esMobile ? 
+            document.querySelectorAll('.hoja-movil') : 
+            document.querySelectorAll('.pagina');
+            
+        if (paginas.length === 0) {
+            console.error('No se encontraron páginas para cargar');
+            usarFallbackCarrusel();
+            return;
         }
+        
+        flipbook.loadFromHTML(paginas);
         
         // Eventos
         flipbook.on('flip', function(e) {
@@ -970,6 +1052,140 @@ function abrirWhatsAppDirecto(productoId) {
 }
 
 /* =====================================================
+   GALERÍA DEL MODAL
+===================================================== */
+let galeriaActual = 0;
+let galeriaItems = [];
+
+function configurarGaleriaModal(producto) {
+    galeriaItems = [];
+    
+    // Agregar imagen
+    galeriaItems.push({
+        type: 'image',
+        src: producto.img,
+        alt: producto.nombre
+    });
+    
+    // Agregar video si existe
+    if (producto.videos) {
+        galeriaItems.push({
+            type: 'video',
+            src: producto.videos,
+            alt: `${producto.nombre} - Video`
+        });
+    }
+    
+    // Actualizar indicadores
+    const indicadores = document.querySelector('.galeria-indicadores');
+    indicadores.innerHTML = '';
+    
+    galeriaItems.forEach((_, index) => {
+        const dot = document.createElement('span');
+        dot.className = `galeria-dot ${index === 0 ? 'active' : ''}`;
+        dot.setAttribute('data-index', index);
+        dot.onclick = () => irAGaleriaItem(index);
+        indicadores.appendChild(dot);
+    });
+    
+    // Mostrar solo la imagen inicialmente
+    mostrarGaleriaItem(0);
+}
+
+function mostrarGaleriaItem(index) {
+    const items = document.querySelectorAll('.galeria-item');
+    const dots = document.querySelectorAll('.galeria-dot');
+    
+    // Ocultar todos los items
+    items.forEach(item => {
+        item.style.display = 'none';
+        item.classList.remove('active');
+    });
+    
+    // Desactivar todos los dots
+    dots.forEach(dot => dot.classList.remove('active'));
+    
+    if (galeriaItems[index]) {
+        const item = galeriaItems[index];
+        const galeriaItem = document.querySelector(`[data-type="${item.type}"]`);
+        
+        if (galeriaItem) {
+            galeriaItem.style.display = 'block';
+            galeriaItem.classList.add('active');
+            
+            if (item.type === 'image') {
+                const img = galeriaItem.querySelector('img');
+                img.src = item.src;
+                img.alt = item.alt;
+            } else if (item.type === 'video') {
+                const video = galeriaItem.querySelector('video');
+                video.src = item.src;
+                video.load();
+            }
+        }
+        
+        // Activar dot correspondiente
+        if (dots[index]) {
+            dots[index].classList.add('active');
+        }
+    }
+    
+    galeriaActual = index;
+    actualizarBotonesGaleria();
+}
+
+function cambiarGaleriaItem(direction) {
+    const nuevoIndex = galeriaActual + direction;
+    
+    if (nuevoIndex >= 0 && nuevoIndex < galeriaItems.length) {
+        mostrarGaleriaItem(nuevoIndex);
+    }
+}
+
+function irAGaleriaItem(index) {
+    if (index >= 0 && index < galeriaItems.length) {
+        mostrarGaleriaItem(index);
+    }
+}
+
+function actualizarBotonesGaleria() {
+    const btnPrev = document.querySelector('.galeria-prev');
+    const btnNext = document.querySelector('.galeria-next');
+    
+    if (btnPrev) btnPrev.disabled = galeriaActual === 0;
+    if (btnNext) btnNext.disabled = galeriaActual === galeriaItems.length - 1;
+}
+
+/* =====================================================
+   GALERÍA DE HOJAS MÓVILES
+===================================================== */
+function cambiarHojaGaleria(element, index) {
+    const hoja = element.closest('.hoja-movil');
+    const items = hoja.querySelectorAll('.hoja-galeria-item');
+    const dots = hoja.querySelectorAll('.hoja-galeria-dot');
+    
+    // Ocultar todos los items
+    items.forEach(item => {
+        item.style.display = 'none';
+        item.classList.remove('active');
+    });
+    
+    // Desactivar todos los dots
+    dots.forEach(dot => dot.classList.remove('active'));
+    
+    // Mostrar item seleccionado
+    if (items[index]) {
+        items[index].style.display = 'block';
+        items[index].classList.add('active');
+    }
+    
+    // Activar dot correspondiente
+    if (dots[index]) {
+        dots[index].classList.add('active');
+    }
+}
+
+/* =====================================================
    MODAL DE PRODUCTO (SOLO DESKTOP)
 ===================================================== */
 function abrirModalProducto(productoId) {
@@ -988,11 +1204,11 @@ function abrirModalProducto(productoId) {
     
     console.log('Abriendo modal para:', producto.nombre);
     
+    // Configurar galería
+    configurarGaleriaModal(producto);
+    
     // Actualizar contenido del modal
-    document.getElementById('modal-img').src = producto.img;
-    document.getElementById('modal-img').alt = producto.nombre;
     document.getElementById('modal-titulo').textContent = producto.nombre;
-    // CORRECCIÓN: quitar '<' que estaba por error
     document.getElementById('modal-incluye').textContent = `Incluye: ${producto.incluye}`;
     document.getElementById('modal-descripcion').textContent = producto.desc;
     document.getElementById('modal-precio-valor').textContent = producto.precio;
@@ -1022,11 +1238,19 @@ function regenerarCatalogo() {
     // Destruir flipbook actual si existe
     if (flipbook) {
         try {
-            if (typeof flipbook.destroy === 'function') flipbook.destroy();
+            if (typeof flipbook.destroy === 'function') {
+                flipbook.destroy();
+                console.log('Flipbook destruido correctamente');
+            }
         } catch (error) {
             console.log('Error al destruir flipbook:', error);
         }
         flipbook = null;
+    }
+    
+    // Limpiar contenedor completamente
+    if (flipbookContainer) {
+        flipbookContainer.innerHTML = '';
     }
     
     // Resetear página actual
@@ -1035,11 +1259,16 @@ function regenerarCatalogo() {
     // Regenerar páginas
     generarPaginas();
     
-    // Reinicializar flipbook
-    setTimeout(() => {
-        inicializarFlipbook();
+    // Reinicializar flipbook solo si no es móvil
+    if (!esMobile) {
+        setTimeout(() => {
+            inicializarFlipbook();
+            actualizarNavegacion();
+        }, 200);
+    } else {
+        // Para móvil, solo actualizar navegación
         actualizarNavegacion();
-    }, 150);
+    }
 }
 
 /* =====================================================

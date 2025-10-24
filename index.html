@@ -56,8 +56,26 @@
             <button class="modal-close" id="modal-close" aria-label="Cerrar">&times;</button>
             
             <div class="modal-body">
-                <div class="modal-imagen">
-                    <img id="modal-img" src="" alt="">
+                <div class="modal-galeria">
+                    <div class="galeria-contenedor">
+                        <div class="galeria-item active" data-type="image">
+                            <img id="modal-img" src="" alt="">
+                        </div>
+                        <div class="galeria-item" data-type="video" style="display: none;">
+                            <video id="modal-video" controls preload="metadata">
+                                <source src="" type="video/mp4">
+                                Tu navegador no soporta videos.
+                            </video>
+                        </div>
+                    </div>
+                    <div class="galeria-navegacion">
+                        <button class="galeria-btn galeria-prev" onclick="cambiarGaleriaItem(-1)">‹</button>
+                        <div class="galeria-indicadores">
+                            <span class="galeria-dot active" data-index="0" onclick="irAGaleriaItem(0)"></span>
+                            <span class="galeria-dot" data-index="1" onclick="irAGaleriaItem(1)"></span>
+                        </div>
+                        <button class="galeria-btn galeria-next" onclick="cambiarGaleriaItem(1)">›</button>
+                    </div>
                 </div>
                 
                 <div class="modal-info">
@@ -72,7 +90,7 @@
                     
                     <div class="modal-acciones">
                         <a id="whatsapp-btn" class="whatsapp-btn" href="#" target="_blank" rel="noopener">
-                            <span class="whatsapp-icon"></span>
+                            <span class="whatsapp-icon">📱</span>
                             Consultar por WhatsApp
                         </a>
                     </div>
@@ -82,6 +100,34 @@
     </div>
 
     <!-- Scripts -->
+    <!-- Firebase SDK v10.7.1 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, getDocs, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3OvglK2Qcmi20kBp_q--zwesFE8c77IM",
+            authDomain: "servilletasnavidenas.firebaseapp.com",
+            projectId: "servilletasnavidenas",
+            storageBucket: "servilletasnavidenas.firebasestorage.app",
+            messagingSenderId: "484584775953",
+            appId: "1:484584775953:web:817077cb2f184b69a92cb0",
+            measurementId: "G-8QC2ZXW0DC"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Make Firebase available globally
+        window.firebaseApp = app;
+        window.db = db;
+        window.getDocs = getDocs;
+        window.collection = collection;
+        window.onSnapshot = onSnapshot;
+    </script>
+    
     <!-- Librería PageFlip (asegúrate que el CDN sea accesible desde tu entorno) -->
     <script src="https://unpkg.com/page-flip/dist/js/page-flip.browser.js"></script>
     <script src="script.js"></script>
