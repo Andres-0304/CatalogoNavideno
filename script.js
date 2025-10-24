@@ -925,40 +925,34 @@ function configurarNavegacionDesktop() {
     const flipbookElement = document.getElementById('flipbook');
     if (!flipbookElement) return;
     
-    // Interceptar clics ANTES de que PageFlip los procese
-    flipbookElement.addEventListener('click', function(e) {
-        console.log('Clic detectado en flipbook:', e.target);
-        
-        // Verificar si el clic fue en un producto
-        const producto = e.target.closest('.producto-tarjeta');
-        if (producto) {
-            console.log('Clic en producto - navegación deshabilitada');
-            e.stopPropagation();
-            e.preventDefault();
-            return false;
-        }
-        
-        // Verificar si el clic fue en el modal
-        const modal = e.target.closest('.modal-overlay');
-        if (modal) {
-            console.log('Clic en modal - navegación deshabilitada');
-            e.stopPropagation();
-            e.preventDefault();
-            return false;
-        }
-        
-        // Verificar si el clic fue en botones
-        const boton = e.target.closest('button');
-        if (boton) {
-            console.log('Clic en botón - navegación deshabilitada');
-            e.stopPropagation();
-            e.preventDefault();
-            return false;
-        }
-        
-        // Solo permitir navegación en áreas vacías
-        console.log('Clic en área vacía - navegación permitida');
-    }, true); // Usar capture para interceptar ANTES que PageFlip
+    // Interceptar clics solo en las páginas del catálogo, NO en botones
+    const paginas = document.querySelectorAll('.pagina');
+    paginas.forEach((pagina, index) => {
+        pagina.addEventListener('click', function(e) {
+            console.log('Clic en página:', index, e.target);
+            
+            // Verificar si el clic fue en un producto
+            const producto = e.target.closest('.producto-tarjeta');
+            if (producto) {
+                console.log('Clic en producto dentro de página - navegación deshabilitada');
+                e.stopPropagation();
+                e.preventDefault();
+                return false;
+            }
+            
+            // Verificar si el clic fue en botones
+            const boton = e.target.closest('button');
+            if (boton) {
+                console.log('Clic en botón dentro de página - navegación deshabilitada');
+                e.stopPropagation();
+                e.preventDefault();
+                return false;
+            }
+            
+            // Solo permitir navegación en áreas vacías de la página
+            console.log('Clic en área vacía de página - navegación permitida');
+        }, true);
+    });
     
     console.log('Navegación desktop configurada');
 }
