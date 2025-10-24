@@ -243,25 +243,28 @@ function cargarCatalogoMovil() {
 }
 
 function generarHojasMoviles(container) {
-    console.log('Generando 10 hojas individuales para móvil...');
+    const totalHojas = 1 + productos.length + 1; // portada + productos + contraportada
+    console.log(`Generando ${totalHojas} hojas individuales para móvil...`);
     
     // Hoja 1: Portada
     generarHojaPortada(container);
     
-    // Hojas 2-9: Productos individuales
+    // Hojas 2 a (1 + productos.length): Productos individuales
     for (let i = 0; i < productos.length; i++) {
         generarHojaProducto(productos[i], i + 2, container);
     }
     
-    // Hoja 10: Contraportada
+    // Última hoja: Contraportada
     generarHojaContraportada(container);
     
     // Verificar que se generaron las hojas
     const hojasGeneradas = container.querySelectorAll('.hoja-movil');
-    console.log(`Hojas generadas: ${hojasGeneradas.length} de 10 esperadas`);
+    console.log(`Hojas generadas: ${hojasGeneradas.length} de ${totalHojas} esperadas`);
     
     if (hojasGeneradas.length === 0) {
         console.error('No se generaron hojas móviles');
+    } else if (hojasGeneradas.length !== totalHojas) {
+        console.warn(`Advertencia: Se generaron ${hojasGeneradas.length} hojas pero se esperaban ${totalHojas}`);
     }
 }
 
@@ -355,7 +358,7 @@ function generarHojaProducto(producto, numeroHoja, container) {
             
             <div class="hoja-acciones">
                 <button class="hoja-btn-whatsapp" onclick="abrirWhatsAppDirecto('${producto.id}')">
-                    <span class="whatsapp-icon">📱</span>
+                    <span class="whatsapp-icon"></span>
                     Consultar por WhatsApp
                 </button>
             </div>
@@ -383,11 +386,11 @@ function generarHojaContraportada(container) {
                     <h3>Contacto</h3>
                     <div class="contacto-info">
                         <div class="contacto-item">
-                            <span class="contacto-icon">📱</span>
+                            <span class="contacto-icon"></span>
                             <span>WhatsApp: +51 949 823 528</span>
                         </div>
                         <div class="contacto-item">
-                            <span class="contacto-icon">📧</span>
+                            <span class="contacto-icon"></span>
                             <span>Email: navidad@tumesa.com</span>
                         </div>
                     </div>
@@ -759,7 +762,10 @@ function configurarNavegacionMovil() {
     
     // Variables para el catálogo móvil
     let hojaActualMovil = 0;
-    const totalHojasMovil = 10;
+    // Calcular total de hojas: 1 portada + productos + 1 contraportada
+    const totalHojasMovil = 1 + productos.length + 1; // portada + productos + contraportada
+    
+    console.log(`Total de hojas móviles: ${totalHojasMovil} (1 portada + ${productos.length} productos + 1 contraportada)`);
     
     // Actualizar contador para móvil
     if (totalPaginasSpan) totalPaginasSpan.textContent = totalHojasMovil;
