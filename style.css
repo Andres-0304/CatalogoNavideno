@@ -735,6 +735,19 @@ body {
     object-fit: cover;
 }
 
+/* Los videos se controlan via JavaScript para estar sin sonido */
+
+/* Estilos para controles de video silenciosos */
+.galeria-item video::-webkit-media-controls-volume-slider,
+.hoja-galeria-item video::-webkit-media-controls-volume-slider {
+    display: none;
+}
+
+.galeria-item video::-webkit-media-controls-mute-button,
+.hoja-galeria-item video::-webkit-media-controls-mute-button {
+    display: none;
+}
+
 .galeria-navegacion {
     position: absolute;
     bottom: 10px;

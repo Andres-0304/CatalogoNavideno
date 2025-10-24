@@ -62,7 +62,7 @@
                             <img id="modal-img" src="" alt="">
                         </div>
                         <div class="galeria-item" data-type="video" style="display: none;">
-                            <video id="modal-video" controls preload="metadata">
+                            <video id="modal-video" controls preload="metadata" muted>
                                 <source src="" type="video/mp4">
                                 Tu navegador no soporta videos.
                             </video>
@@ -105,16 +105,33 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getFirestore, collection, getDocs, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         
-        // Firebase configuration from Netlify environment variables
-        const firebaseConfig = {
-            apiKey: window.FIREBASE_API_KEY,
-            authDomain: window.FIREBASE_AUTH_DOMAIN,
-            projectId: window.FIREBASE_PROJECT_ID,
-            storageBucket: window.FIREBASE_STORAGE_BUCKET,
-            messagingSenderId: window.FIREBASE_MESSAGING_SENDER_ID,
-            appId: window.FIREBASE_APP_ID,
-            measurementId: window.FIREBASE_MEASUREMENT_ID
-        };
+        // Security Hardening: Credential Validation & Integrity Check
+        function validateFirebaseConfig(config) {
+            const requiredFields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+            const hasAllFields = requiredFields.every(field => config && config[field]);
+            
+            if (!hasAllFields) {
+                throw new Error('Security: Invalid Firebase configuration');
+            }
+            
+            // Domain validation
+            const allowedDomains = ['localhost', '127.0.0.1', 'servilletasnavidenas.netlify.app'];
+            const currentDomain = window.location.hostname;
+            
+            if (!allowedDomains.includes(currentDomain)) {
+                throw new Error('Security: Unauthorized domain access');
+            }
+            
+            return true;
+        }
+        
+        // Initialize with security checks
+        if (!window.FIREBASE_CONFIG) {
+            throw new Error('Security: Firebase configuration not found');
+        }
+        
+        validateFirebaseConfig(window.FIREBASE_CONFIG);
+        const firebaseConfig = window.FIREBASE_CONFIG;
         
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);

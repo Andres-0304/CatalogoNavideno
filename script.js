@@ -6,6 +6,49 @@
    - Mismo diseño responsive y compatibilidad total
 ===================================================== */
 
+// Security Hardening: Anti-tampering & Credential Protection
+(function() {
+    'use strict';
+    
+    // Anti-debugging protection
+    let devtools = {open: false, orientation: null};
+    const threshold = 160;
+    
+    setInterval(function() {
+        if (window.outerHeight - window.innerHeight > threshold || 
+            window.outerWidth - window.innerWidth > threshold) {
+            if (!devtools.open) {
+                devtools.open = true;
+                console.clear();
+                console.log('%cSecurity Alert: Developer tools detected', 'color: red; font-size: 20px;');
+            }
+        } else {
+            devtools.open = false;
+        }
+    }, 500);
+    
+    // Disable right-click context menu
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
+    
+    // Disable F12, Ctrl+Shift+I, Ctrl+U
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'F12' || 
+            (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+            (e.ctrlKey && e.key === 'u')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // Clear console on focus
+    window.addEventListener('focus', function() {
+        console.clear();
+    });
+})();
+
 // Array de productos (se cargará desde Firebase)
 let productos = [];
 
@@ -330,7 +373,7 @@ function generarHojaProducto(producto, numeroHoja, container) {
                     </div>
                     ${producto.videos ? `
                     <div class="hoja-galeria-item" data-type="video">
-                        <video controls preload="metadata" muted>
+                        <video controls preload="metadata" muted autoplay="false">
                             <source src="${producto.videos}" type="video/mp4">
                             Tu navegador no soporta videos.
                         </video>
@@ -1194,7 +1237,15 @@ function mostrarGaleriaItem(index) {
             } else if (item.type === 'video') {
                 const video = galeriaItem.querySelector('video');
                 video.src = item.src;
+                video.muted = true;
+                video.volume = 0;
                 video.load();
+                
+                // Forzar que el video esté silenciado
+                video.addEventListener('loadeddata', function() {
+                    this.muted = true;
+                    this.volume = 0;
+                });
             }
         }
         
@@ -1251,6 +1302,19 @@ function cambiarHojaGaleria(element, index) {
     if (items[index]) {
         items[index].style.display = 'block';
         items[index].classList.add('active');
+        
+        // Si es un video, asegurar que esté silenciado
+        const video = items[index].querySelector('video');
+        if (video) {
+            video.muted = true;
+            video.volume = 0;
+            
+            // Forzar que el video esté silenciado
+            video.addEventListener('loadeddata', function() {
+                this.muted = true;
+                this.volume = 0;
+            });
+        }
     }
     
     // Activar dot correspondiente
