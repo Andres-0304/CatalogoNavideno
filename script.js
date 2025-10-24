@@ -545,16 +545,16 @@ function inicializarFlipbook() {
             maxHeight: 800,
             showCover: true,
             mobileScrollSupport: false,
-            swipeDistance: 50,
+            swipeDistance: esMobile ? 0 : 50,        // 👉 Deshabilitar swipe en móvil
             clickEventForward: true,
             usePortrait: esMobile,                 // 👉 En móvil: modo retrato
             display: esMobile ? "single" : "double", // 👉 1 página en móvil, 2 en desktop
             startPage: 0,
             drawShadow: true,
             flippingTime: esMobile ? 1000 : 800,  // 👉 Animación más lenta en móvil para efecto hoja
-            useMouseEvents: true,
+            useMouseEvents: !esMobile,             // 👉 Solo mouse en desktop
             showPageCorners: esMobile ? false : true, // 👉 Sin esquinas en móvil para efecto hoja limpia
-            disableFlipByClick: false,
+            disableFlipByClick: esMobile,          // 👉 Deshabilitar click en móvil
             autoSize: true,
             maxShadowOpacity: esMobile ? 0.3 : 0.5, // 👉 Sombra más sutil en móvil
             shadowSides: esMobile ? 0.8 : 1.0,       // 👉 Sombra más pronunciada en móvil
@@ -822,17 +822,19 @@ function configurarNavegacionMovil() {
     mostrarHojaMovil(0);
     actualizarBotonesMovil();
     
-    // Configurar gestos táctiles para móvil
+    // Configurar gestos táctiles para móvil (solo un sistema)
     configurarGestosMovil();
-    
-    // Configurar gestos también en las hojas individuales
-    configurarGestosEnHojas();
     
     console.log('Navegación móvil configurada');
 }
 
 function configurarGestosMovil() {
     const mobileContainer = document.getElementById('mobile-catalog-container');
+    if (!mobileContainer) {
+        console.error('Contenedor móvil no encontrado');
+        return;
+    }
+    
     let startX = 0;
     let startY = 0;
     let isDragging = false;
@@ -856,11 +858,11 @@ function configurarGestosMovil() {
             const deltaY = touch.clientY - startY;
             
             // Detectar si es un deslizamiento horizontal
-            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 15) {
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20) {
                 isDragging = true;
                 isHorizontalSwipe = true;
                 console.log('Deslizamiento horizontal detectado:', deltaX);
-            } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 15) {
+            } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 20) {
                 isDragging = true;
                 isHorizontalSwipe = false;
                 console.log('Deslizamiento vertical detectado:', deltaY);
@@ -875,11 +877,12 @@ function configurarGestosMovil() {
             
             console.log('Touch end - deltaX:', deltaX);
             
-            if (deltaX > 50) {
+            // Aumentar sensibilidad para evitar doble navegación
+            if (deltaX > 80) {
                 // Deslizar derecha - anterior
                 console.log('Deslizar derecha - ir a anterior');
                 document.getElementById('btn-anterior').click();
-            } else if (deltaX < -50) {
+            } else if (deltaX < -80) {
                 // Deslizar izquierda - siguiente
                 console.log('Deslizar izquierda - ir a siguiente');
                 document.getElementById('btn-siguiente').click();
@@ -893,65 +896,7 @@ function configurarGestosMovil() {
     console.log('Gestos táctiles configurados correctamente');
 }
 
-function configurarGestosEnHojas() {
-    console.log('Configurando gestos en hojas individuales...');
-    
-    // Agregar gestos a todas las hojas móviles
-    const hojas = document.querySelectorAll('.hoja-movil');
-    hojas.forEach((hoja, index) => {
-        let startX = 0;
-        let startY = 0;
-        let isDragging = false;
-        let isHorizontalSwipe = false;
-        
-        hoja.addEventListener('touchstart', function(e) {
-            const touch = e.touches[0];
-            startX = touch.clientX;
-            startY = touch.clientY;
-            isDragging = false;
-            isHorizontalSwipe = false;
-        }, { passive: true });
-        
-        hoja.addEventListener('touchmove', function(e) {
-            if (!isDragging) {
-                const touch = e.touches[0];
-                const deltaX = touch.clientX - startX;
-                const deltaY = touch.clientY - startY;
-                
-                // Detectar si es un deslizamiento horizontal
-                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 15) {
-                    isDragging = true;
-                    isHorizontalSwipe = true;
-                } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 15) {
-                    isDragging = true;
-                    isHorizontalSwipe = false;
-                }
-            }
-        }, { passive: true });
-        
-        hoja.addEventListener('touchend', function(e) {
-            if (isDragging && isHorizontalSwipe) {
-                const touch = e.changedTouches[0];
-                const deltaX = touch.clientX - startX;
-                
-                if (deltaX > 50) {
-                    // Deslizar derecha - anterior
-                    console.log('Deslizar derecha en hoja - ir a anterior');
-                    document.getElementById('btn-anterior').click();
-                } else if (deltaX < -50) {
-                    // Deslizar izquierda - siguiente
-                    console.log('Deslizar izquierda en hoja - ir a siguiente');
-                    document.getElementById('btn-siguiente').click();
-                }
-            }
-            
-            isDragging = false;
-            isHorizontalSwipe = false;
-        }, { passive: true });
-    });
-    
-    console.log(`Gestos configurados en ${hojas.length} hojas móviles`);
-}
+// Función eliminada para evitar conflictos de navegación múltiple
 
 function paginaAnterior() {
     if (paginaActual > 0) {
