@@ -554,7 +554,7 @@ function inicializarFlipbook() {
             flippingTime: esMobile ? 1000 : 800,  // 👉 Animación más lenta en móvil para efecto hoja
             useMouseEvents: !esMobile,             // 👉 Solo mouse en desktop
             showPageCorners: esMobile ? false : true, // 👉 Sin esquinas en móvil para efecto hoja limpia
-            disableFlipByClick: true,              // 👉 Deshabilitar click completamente
+            disableFlipByClick: false,             // 👉 Permitir click pero controlarlo manualmente
             autoSize: true,
             maxShadowOpacity: esMobile ? 0.3 : 0.5, // 👉 Sombra más sutil en móvil
             shadowSides: esMobile ? 0.8 : 1.0,       // 👉 Sombra más pronunciada en móvil
@@ -653,9 +653,20 @@ function actualizarCarrusel() {
    NAVEGACIÓN
 ===================================================== */
 function configurarEventos() {
-    // Botones de navegación
-    btnAnterior.addEventListener('click', paginaAnterior);
-    btnSiguiente.addEventListener('click', paginaSiguiente);
+    // Botones de navegación - usar navegación manual
+    btnAnterior.addEventListener('click', function() {
+        console.log('Botón anterior clickeado');
+        if (paginaActual > 0) {
+            paginaAnterior();
+        }
+    });
+    
+    btnSiguiente.addEventListener('click', function() {
+        console.log('Botón siguiente clickeado');
+        if (paginaActual < totalPaginas - 1) {
+            paginaSiguiente();
+        }
+    });
     
     // Eventos del modal
     modalClose.addEventListener('click', cerrarModal);
@@ -914,6 +925,7 @@ function configurarNavegacionDesktop() {
     const flipbookElement = document.getElementById('flipbook');
     if (!flipbookElement) return;
     
+    // Interceptar clics ANTES de que PageFlip los procese
     flipbookElement.addEventListener('click', function(e) {
         console.log('Clic detectado en flipbook:', e.target);
         
@@ -921,55 +933,32 @@ function configurarNavegacionDesktop() {
         const producto = e.target.closest('.producto-tarjeta');
         if (producto) {
             console.log('Clic en producto - navegación deshabilitada');
-            return; // No hacer nada, el producto manejará su propio clic
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
         }
         
         // Verificar si el clic fue en el modal
         const modal = e.target.closest('.modal-overlay');
         if (modal) {
             console.log('Clic en modal - navegación deshabilitada');
-            return; // No hacer nada, el modal manejará su propio clic
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
         }
         
         // Verificar si el clic fue en botones
         const boton = e.target.closest('button');
         if (boton) {
             console.log('Clic en botón - navegación deshabilitada');
-            return; // No hacer nada, el botón manejará su propio clic
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
         }
         
-        // Solo navegar en áreas vacías
-        console.log('Clic en área vacía - navegación manual');
-        
-        // Determinar si hacer clic en esquina izquierda o derecha
-        const rect = flipbookElement.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const width = rect.width;
-        
-        // Verificar si estamos en la portada (página 0)
-        if (paginaActual === 0) {
-            // En la portada, cualquier clic va a la siguiente página
-            console.log('Clic en portada - ir a siguiente página');
-            if (paginaActual < totalPaginas - 1) {
-                paginaSiguiente();
-            }
-        } else {
-            // En páginas de productos, usar navegación por zonas
-            if (clickX < width * 0.3) {
-                // Clic en lado izquierdo - página anterior
-                console.log('Clic en lado izquierdo - página anterior');
-                if (paginaActual > 0) {
-                    paginaAnterior();
-                }
-            } else if (clickX > width * 0.7) {
-                // Clic en lado derecho - página siguiente
-                console.log('Clic en lado derecho - página siguiente');
-                if (paginaActual < totalPaginas - 1) {
-                    paginaSiguiente();
-                }
-            }
-        }
-    });
+        // Solo permitir navegación en áreas vacías
+        console.log('Clic en área vacía - navegación permitida');
+    }, true); // Usar capture para interceptar ANTES que PageFlip
     
     console.log('Navegación desktop configurada');
 }
@@ -1058,34 +1047,44 @@ function configurarGestosModal() {
 }
 
 function paginaAnterior() {
+    console.log('paginaAnterior llamada - página actual:', paginaActual);
     if (paginaActual > 0) {
         if (esMobile) {
             aplicarEfectoColocarHoja();
         }
         
         if (flipbook) {
+            console.log('Usando flipbook.flipPrev()');
             flipbook.flipPrev();
         } else {
+            console.log('Usando navegación manual');
             paginaActual--;
             actualizarCarrusel();
             actualizarNavegacion();
         }
+    } else {
+        console.log('Ya en la primera página');
     }
 }
 
 function paginaSiguiente() {
+    console.log('paginaSiguiente llamada - página actual:', paginaActual, 'total páginas:', totalPaginas);
     if (paginaActual < totalPaginas - 1) {
         if (esMobile) {
             aplicarEfectoSacarHoja();
         }
         
         if (flipbook) {
+            console.log('Usando flipbook.flipNext()');
             flipbook.flipNext();
         } else {
+            console.log('Usando navegación manual');
             paginaActual++;
             actualizarCarrusel();
             actualizarNavegacion();
         }
+    } else {
+        console.log('Ya en la última página');
     }
 }
 
